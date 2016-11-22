@@ -59,7 +59,9 @@ public:
 	friend std::ostream& operator<< (std::ostream& os, HalfEdgeDS& ds);
 
 	// TODO: Extend the interface of the this data structure by implementing at least three euler opertators
-
+    void MVVELS();
+    void MEV();
+    void MEL();
 	// TODO: Check if the data structure is correct using the Euler-Poincar'e formula
 
 private:

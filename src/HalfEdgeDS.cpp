@@ -16,32 +16,64 @@ HalfEdgeDS::~HalfEdgeDS()
 
 void HalfEdgeDS::createDefaultObject()
 {
-	// WARNING: this example does NOT create a valid topology. It just creates the minimum elements to draw one line.
+    MVVELS();
 	// CARE: for every "new" we need a "delete". if an element is added to the according list, it is deleted automatically within clearDS().
 
 	// create example elements. 	
-	Vertex* v1 = new Vertex;
-	Vertex* v2 = new Vertex;
-	HalfEdge* he1 = new HalfEdge;
-	HalfEdge* he2 = new HalfEdge;
-	Edge* e = new Edge;
-	// set up connections
-	v1->coordinates = Vec3f(1.0f, 2.0f, 3.0f);
-	v2->coordinates = Vec3f(3.0f, 2.0f, 1.0f);
-	he1->startV = v1;
-	he1->nextHE = he2;
-	he2->startV = v2;
-	he2->nextHE = he1;
-	e->he1 = he1;
-	e->he2 = he2;
-	// add elements to the lists
-	vertices.push_back(v1);
-	vertices.push_back(v2);
-	halfEdges.push_back(he1);
-	halfEdges.push_back(he2);
-	edges.push_back(e);
 
 	// TODO: Create a new VALID test object including all topological elements and linkage. The object should be volumetric and consist of at least one hole (H > 0).
+}
+
+void HalfEdgeDS::MVVELS()
+{
+    //create 2 Vertices 1x edge 2 halfedges 1 loop 1 solid
+    Solid* s1 = new Solid;
+    Loop* l1 = new Loop;
+    Vertex* v1 = new Vertex;
+    Vertex* v2 = new Vertex;
+    Edge* e1 = new Edge;
+    HalfEdge* he1 = new HalfEdge;
+    HalfEdge* he2 = new HalfEdge;
+
+    //set up topology
+
+    l1->nextLoop = l1;
+    l1->prevLoop = l1;
+    l1->toHE = he1;
+
+    float x1,y1,z1,x2,y2,z2;
+    std::cout << "coordinates for V1 and V2 format: x1,y1,z1,x2,y2,z2" << std::endl;
+    std::cin >> x1 >> y1 >> z1 >> x2 >> y2 >> z2;
+    v1->coordinates = Vec3f(x1, y1, z1);
+    v2->coordinates = Vec3f(x2, y2, z2);
+
+    e1->he1 = he1;
+    e1->he2 = he2;
+
+    he1->startV = v1;
+    he1->toEdge = e1;
+    he1->toLoop = l1;
+    he1->nextHE = he2;
+    he1->prevHE = he2;
+
+    he2->startV = v2;
+    he2->toEdge = e1;
+    he2->toLoop = l1;
+    he2->nextHE = he1;
+    he2->prevHE = he1;
+
+    //push elements into lists
+    solids.push_back(s1);
+
+    loops.push_back(l1);
+
+    vertices.push_back(v1);
+    vertices.push_back(v2);
+
+    edges.push_back(e1);
+
+    halfEdges.push_back(he1);
+    halfEdges.push_back(he2);
 }
 
 void HalfEdgeDS::clearDS()
@@ -60,6 +92,8 @@ void HalfEdgeDS::clearDS()
 	for (auto *p : solids) delete p;
 	solids.clear();
 }
+
+
 
 std::ostream& operator<< (std::ostream& os, HalfEdgeDS& ds)
 {

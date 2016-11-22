@@ -4,25 +4,38 @@
 
 #include <GL/glut.h>
 
+Vec3f colorRed(1.0f, 0.0f, 0.0f);
+Vec3f colorGreen(0.0f, 1.0f, 0.0f);
+Vec3f colorBlue(0.0f, 0.0f, 1.0f);
+Vec3f colorWhite(1.0f, 1.0f, 1.0f);
+Vec3f colorTeal(0.0f, 1.0f, 0.92f);
+
 void renderDS(const HalfEdgeDS& heDS)
 {
-	for (auto const *v : heDS.getVertices()) renderV(v); // render all vertices as points
-	for (auto const *e : heDS.getEdges()) renderE(e); // render all edges as lines
+    for (auto const *v : heDS.getVertices()) renderV(v, colorRed); // render all vertices as points
+    for (auto const *e : heDS.getEdges()) renderE(e, colorTeal); // render all edges as lines
 }
 
-void renderE(const Edge* e, const Vec3f& color /*= Vec3f(0.0f, 1.0f, 0.0f)*/)
+void renderE(const Edge* e, const Vec3f& color)
 {
-	// TODO: render the edge with the given color
+    glBegin(GL_LINES);
+    glColor3fv(&color.x);
+    glVertex3fv(&e->he1->startV->coordinates.x);
+    glVertex3fv(&e->he2->startV->coordinates.x);
+    glEnd();
 }
 
-void renderHE(const HalfEdge* he, const Vec3f& color /*= Vec3f(0.0f, 1.0f, 0.0f)*/)
+void renderHE(const HalfEdge* he, const Vec3f& color)
 {
 	// TODO: render the half-edge with the given color
 }
 
-void renderV(const Vertex* v, const Vec3f& color /*= Vec3f(1.0f, 0.0f, 1.0f)*/)
+void renderV(const Vertex* v, const Vec3f& color)
 {
-	// TODO: render the vertex with the given color
+    glBegin(GL_POINTS);
+    glColor3fv(&color.x);
+    glVertex3fv(&v->coordinates.x);
+    glEnd();
 }
 
 
