@@ -16,7 +16,7 @@ int main(int argc, char** argv)
 	// initialize openGL window
 	glutInit(&argc, argv);
 	glutInitWindowPosition(300, 200);
-	glutInitWindowSize(600, 400);
+    glutInitWindowSize(2000, 1200);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 	glutCreateWindow("TU Darmstadt, MBorner"); 
 	// link functions to certain openGL events
