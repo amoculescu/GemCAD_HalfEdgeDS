@@ -24,10 +24,11 @@ void HalfEdgeDS::createDefaultObject()
         std::advance(vi, i);
         MEV(*vi);
     }
-    //MEL(vertices.front(), vertices.back());
+    /*Vertex* ptrToFirst = vertices.front();
+    auto ptrToLast = vertices.begin();
+    std::advance(ptrToLast, vertices.size() - 1);
+    MEL(ptrToFirst, *ptrToLast); gibt segment error*/
 	// CARE: for every "new" we need a "delete". if an element is added to the according list, it is deleted automatically within clearDS().
-
-	// create example elements. 	
 
 	// TODO: Create a new VALID test object including all topological elements and linkage. The object should be volumetric and consist of at least one hole (H > 0).
 }
@@ -68,6 +69,7 @@ void HalfEdgeDS::MVVELS()
     f->toSolid = s1;
 
     float x1,y1,z1,x2,y2,z2;
+    //ask user for point coordinates
     std::cout << "coordinates for V1 and V2 format: x1,y1,z1,x2,y2,z2" << std::endl;
     std::cin >> x1 >> y1 >> z1 >> x2 >> y2 >> z2;
     v1->coordinates = Vec3f(x1, y1, z1);
@@ -112,6 +114,7 @@ void HalfEdgeDS::MEV(Vertex* v)
 
     //create topology
     float x,y,z;
+    //ask user for point coordinates
     std::cout << "coordinates for new vertex format: x,y,z" << std::endl;
     std::cin >> x >> y >> z;
     vNew->coordinates = Vec3f(x, y, z);
@@ -157,6 +160,7 @@ void HalfEdgeDS::MEV(Vertex* v)
 
 void HalfEdgeDS::MEL(Vertex* v1, Vertex* v2)
 {
+    //create new elements
     Loop* l = new Loop;
     Face* f = new Face;
     Edge* e = new Edge;
@@ -188,7 +192,7 @@ void HalfEdgeDS::MEL(Vertex* v1, Vertex* v2)
     he2->toEdge = e;
     he2->toLoop = v1->outgoingHE->toLoop;
 
-    if(v1->outgoingHE == v1->outgoingHE->toEdge->he1) //if v1 == start V
+    if(v1->outgoingHE == v1->outgoingHE->toEdge->he1) //if v1 == first Vertex
     {
         he1->nextHE = v1->outgoingHE->toEdge->he1;
         he1->prevHE = v2->outgoingHE->toEdge->he1;
@@ -199,10 +203,11 @@ void HalfEdgeDS::MEL(Vertex* v1, Vertex* v2)
         v1->outgoingHE->toEdge->he2->nextHE = he2;
         v2->outgoingHE->toEdge->he1->nextHE = he1;
         v2->outgoingHE->toEdge->he2->prevHE = he2;
+        v1->outgoingHE = he2;
         v2->outgoingHE = he1;
 
      }
-    else if(v1->outgoingHE == v1->outgoingHE->toEdge->he2) //if v1 == end V
+    else if(v1->outgoingHE == v1->outgoingHE->toEdge->he2) //if v1 == last Vertex
     {
         he1->nextHE = v2->outgoingHE->toEdge->he1;
         he1->prevHE = v1->outgoingHE->toEdge->he1;
@@ -211,9 +216,10 @@ void HalfEdgeDS::MEL(Vertex* v1, Vertex* v2)
         //update old connections
         v1->outgoingHE->toEdge->he1->nextHE = he1;
         v1->outgoingHE->toEdge->he2->prevHE = he2;
-        v1->outgoingHE = he1;
         v2->outgoingHE->toEdge->he1->prevHE = he1;
         v2->outgoingHE->toEdge->he2->nextHE = he2;
+        v1->outgoingHE = he1;
+        v2->outgoingHE = he2;
     }
     /*HalfEdge* tempHE = new HalfEdge;
     tempHE = he1->nextHE;
