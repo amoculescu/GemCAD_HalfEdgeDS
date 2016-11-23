@@ -61,7 +61,7 @@ public:
 	// TODO: Extend the interface of the this data structure by implementing at least three euler opertators
     void MVVELS();
     void MEV(Vertex* v);
-    void MEL();
+    void MEL(Vertex* v1, Vertex* v2);
 	// TODO: Check if the data structure is correct using the Euler-Poincar'e formula
 
 private:

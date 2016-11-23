@@ -24,6 +24,7 @@ void HalfEdgeDS::createDefaultObject()
         std::advance(vi, i);
         MEV(*vi);
     }
+    //MEL(vertices.front(), vertices.back());
 	// CARE: for every "new" we need a "delete". if an element is added to the according list, it is deleted automatically within clearDS().
 
 	// create example elements. 	
@@ -35,6 +36,7 @@ void HalfEdgeDS::MVVELS()
 {
     //create 2 Vertices 1x edge 2 halfedges 1 loop 1 solid
     Solid* s1 = new Solid;
+    Face* f = new Face;
     Loop* l1 = new Loop;
     Vertex* v1 = new Vertex;
     Vertex* v2 = new Vertex;
@@ -44,6 +46,8 @@ void HalfEdgeDS::MVVELS()
 
     //push elements into lists
     solids.push_back(s1);
+
+    faces.push_back(f);
 
     loops.push_back(l1);
 
@@ -59,6 +63,9 @@ void HalfEdgeDS::MVVELS()
     l1->nextLoop = l1;
     l1->prevLoop = l1;
     l1->toHE = he1;
+
+    f->outerLoop = l1;
+    f->toSolid = s1;
 
     float x1,y1,z1,x2,y2,z2;
     std::cout << "coordinates for V1 and V2 format: x1,y1,z1,x2,y2,z2" << std::endl;
@@ -113,21 +120,108 @@ void HalfEdgeDS::MEV(Vertex* v)
     e->he1 = he1;
     e->he2 = he2;
 
-    he1->startV = v;
+
     he1->toEdge = e;
     he1->toLoop = v->outgoingHE->toLoop;
-    he1->nextHE = he2;
-    he1->prevHE = v->outgoingHE->prevHE;
-
-    he2->startV = vNew;
     he2->toEdge = e;
     he2->toLoop = v->outgoingHE->toLoop;
-    he2->nextHE = v->outgoingHE;
-    he2->prevHE = he1;
 
-    //make previous half-edges point to new ones
-    v->outgoingHE->prevHE->nextHE = he2;
-    v->outgoingHE->prevHE = he1;
+    //determine where Edge is created (front, end, middle)
+    if(v->outgoingHE == v->outgoingHE->toEdge->he1) //edge is being created at the beginning
+    {
+        he1->startV = vNew;
+        he1->nextHE = v->outgoingHE;
+        he1->prevHE = he2;
+        he2->startV = v;
+        he2->nextHE = he1;
+        he2->prevHE = v->outgoingHE->toEdge->he2;
+        //make previous half-edges point to new ones
+        v->outgoingHE->toEdge->he1->prevHE = he1;
+        v->outgoingHE->toEdge->he2->nextHE = he2;
+    }
+    else if(v->outgoingHE == v->outgoingHE->toEdge->he2) //edge is being created at the end
+    {
+        he1->startV = v;
+        he1->nextHE = he2;
+        he1->prevHE = v->outgoingHE->toEdge->he1;
+        he2->startV = vNew;
+        he2->nextHE = v->outgoingHE;
+        he2->prevHE = he1;
+        //make previous half-edges point to new ones
+        v->outgoingHE->toEdge->he1->nextHE = he1;
+        v->outgoingHE->toEdge->he2->prevHE = he2;
+        v->outgoingHE = he2;
+    }
+    //TODO: edge being created not at beginning or end;   edge being attached to complete Object
+}
+
+void HalfEdgeDS::MEL(Vertex* v1, Vertex* v2)
+{
+    Loop* l = new Loop;
+    Face* f = new Face;
+    Edge* e = new Edge;
+    HalfEdge* he1 = new HalfEdge;
+    HalfEdge* he2 = new HalfEdge;
+
+    loops.push_back(l);
+    faces.push_back(f);
+    edges.push_back(e);
+    halfEdges.push_back(he1);
+    halfEdges.push_back(he2);
+
+    //set up connections of new elements
+
+    f->toSolid = v1->outgoingHE->toLoop->toFace->toSolid;
+    f->outerLoop = l;
+    f->innerLoop = l;
+
+    l->toHE = he2;
+    l->nextLoop = l;
+    l->prevLoop = l;
+    l->toFace = f;
+
+    e->he1 = he1;
+    e->he2 = he2;
+
+    he1->toEdge = e;
+    he1->toLoop = l;
+    he2->toEdge = e;
+    he2->toLoop = v1->outgoingHE->toLoop;
+
+    if(v1->outgoingHE == v1->outgoingHE->toEdge->he1) //if v1 == start V
+    {
+        he1->nextHE = v1->outgoingHE->toEdge->he1;
+        he1->prevHE = v2->outgoingHE->toEdge->he1;
+        he2->nextHE = v1->outgoingHE->toEdge->he2;
+        he2->prevHE = v2->outgoingHE->toEdge->he2;
+        //update old connections
+        v1->outgoingHE->toEdge->he1->prevHE = he1;
+        v1->outgoingHE->toEdge->he2->nextHE = he2;
+        v2->outgoingHE->toEdge->he1->nextHE = he1;
+        v2->outgoingHE->toEdge->he2->prevHE = he2;
+        v2->outgoingHE = he1;
+
+     }
+    else if(v1->outgoingHE == v1->outgoingHE->toEdge->he2) //if v1 == end V
+    {
+        he1->nextHE = v2->outgoingHE->toEdge->he1;
+        he1->prevHE = v1->outgoingHE->toEdge->he1;
+        he2->nextHE = v2->outgoingHE->toEdge->he2;
+        he2->prevHE = v1->outgoingHE->toEdge->he2;
+        //update old connections
+        v1->outgoingHE->toEdge->he1->nextHE = he1;
+        v1->outgoingHE->toEdge->he2->prevHE = he2;
+        v1->outgoingHE = he1;
+        v2->outgoingHE->toEdge->he1->prevHE = he1;
+        v2->outgoingHE->toEdge->he2->nextHE = he2;
+    }
+    /*HalfEdge* tempHE = new HalfEdge;
+    tempHE = he1->nextHE;
+    while(tempHE != he1)
+    {
+        tempHE->toLoop = l;
+    }*/
+    //TODO: test for mistakes in connections;
 }
 
 void HalfEdgeDS::clearDS()

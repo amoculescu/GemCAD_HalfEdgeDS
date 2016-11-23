@@ -14,6 +14,14 @@ void renderDS(const HalfEdgeDS& heDS)
 {
     for (auto const *v : heDS.getVertices()) renderV(v, colorRed); // render all vertices as points
     for (auto const *e : heDS.getEdges()) renderE(e, colorTeal); // render all edges as lines
+    glPushMatrix();
+    glTranslatef(-1, -1, 0);
+    glPushMatrix();
+    glScalef(0.8, 0.8, 0.8);
+    //glTranslatef(1.25, 1.25, 0);
+    for (auto const *he : heDS.getHalfEdges()) renderHE(he, colorGreen); // render all halfedges as lines
+    glPopMatrix();
+    glPopMatrix();
 }
 
 void renderE(const Edge* e, const Vec3f& color)
@@ -27,7 +35,17 @@ void renderE(const Edge* e, const Vec3f& color)
 
 void renderHE(const HalfEdge* he, const Vec3f& color)
 {
-	// TODO: render the half-edge with the given color
+    Vec3f p2;
+    glColor3fv(&color.x);
+    if(he == he->toEdge->he1)
+    {
+        p2 = he->toEdge->he2->startV->coordinates;
+    }
+    else
+    {
+        p2 = he->toEdge->he1->startV->coordinates;
+    }
+    renderArrow(he->startV->coordinates, p2, 0.02);
 }
 
 void renderV(const Vertex* v, const Vec3f& color)
