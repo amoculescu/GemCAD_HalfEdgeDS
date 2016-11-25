@@ -1,5 +1,6 @@
 #include "HalfEdgeDS.h"
 
+#include <GL/glut.h>
 #include <stdio.h>		// cout
 #include <iostream>		// cout
 
@@ -16,45 +17,53 @@ HalfEdgeDS::~HalfEdgeDS()
 
 void HalfEdgeDS::createDefaultObject()
 {
-    MVVELS();
-
-    for (int i = 0; i < 2; i++)
-    {
-        auto vi = vertices.begin();
-        std::advance(vi, (vertices.size() -1 ));
-        MEV(*vi);
-    }
-    auto ptrToFirst = vertices.begin();
-    std::advance(ptrToFirst, (vertices.size() - 4));
-    auto ptrToLast = vertices.begin();
-    std::advance(ptrToLast, (vertices.size() -1 ));
-    MEL(*ptrToFirst, *ptrToLast);
-    for (int i = 0; i < 4; i++)
-    {
-        auto vi = vertices.begin();
-        std::advance(vi, i);
-        MEV(*vi);
-        if(i > 0)
-        {
-            ptrToFirst = vertices.begin();
-            ptrToLast = vertices.begin();
-            std::advance(ptrToFirst, (vertices.size() - 2));
-            std::advance(ptrToLast, (vertices.size() -1 ));
-            MEL(*ptrToFirst, *ptrToLast);
-        }
-    }
-    ptrToFirst = vertices.begin();
-    ptrToLast = vertices.begin();
-    std::advance(ptrToFirst, (vertices.size() - 4));
-    std::advance(ptrToLast, (vertices.size() -1 ));
-    MEL(*ptrToFirst, *ptrToLast);
+    float defObjCoord[][3] =   {{0.0f, 0.0f, 0.0f}, //array with containing arrays of coordinates for the vertices
+                                  {0.0f, 2.0f, 0.0f},
+                                  {2.0f, 2.0f, 0.0f},
+                                  {2.0f, 0.0f, 0.0f},
+                                  {0.0f, 0.0f, 2.0f},
+                                  {0.0f, 2.0f, 2.0f},
+                                  {2.0f, 2.0f, 2.0f},
+                                  {2.0f, 0.0f, 2.0f}
+                                 };
+ mvvels(defObjCoord);
+ auto ptrToLast = vertices.begin();
+ for (int i = 2; i < 4; i++)
+ {
+     ptrToLast = vertices.begin();
+     std::advance(ptrToLast, (vertices.size() -1 ));
+     MEV(*ptrToLast, defObjCoord[i]);
+ }
+ auto ptrToFirst = vertices.begin();
+ ptrToLast = vertices.begin();
+ std::advance(ptrToLast, (vertices.size() -1 ));
+ MEL(*ptrToFirst, *ptrToLast);
+ for(int i = 0; i < 4; i++)
+ {
+     ptrToLast = vertices.begin();
+     std::advance(ptrToLast, i);
+     MEV(*ptrToLast, defObjCoord[i + 4]);
+     if (i > 0)
+     {
+         ptrToFirst = vertices.begin();
+         ptrToLast = vertices.begin();
+         std::advance(ptrToFirst, (vertices.size() - 2));
+         std::advance(ptrToLast, (vertices.size() -1 ));
+         MEL(*ptrToFirst, *ptrToLast);
+     }
+ }
+ ptrToFirst = vertices.begin();
+ ptrToLast = vertices.begin();
+ std::advance(ptrToFirst, (vertices.size() - 4));
+ std::advance(ptrToLast, (vertices.size() -1 ));
+ MEL(*ptrToFirst, *ptrToLast);
 
 	// CARE: for every "new" we need a "delete". if an element is added to the according list, it is deleted automatically within clearDS().
 
 	// TODO: Create a new VALID test object including all topological elements and linkage. The object should be volumetric and consist of at least one hole (H > 0).
 }
 
-void HalfEdgeDS::MVVELS()
+void HalfEdgeDS::mvvels(float aon[][3] = nullptr)
 {
     //create 2 Vertices 1x edge 2 halfedges 1 loop 1 solid
     Solid* s1 = new Solid;
@@ -91,9 +100,21 @@ void HalfEdgeDS::MVVELS()
     f->toSolid = s1;
 
     float x1,y1,z1,x2,y2,z2;
-    //ask user for point coordinates
-    std::cout << "coordinates for V1 and V2 format: x1,y1,z1,x2,y2,z2" << std::endl;
-    std::cin >> x1 >> y1 >> z1 >> x2 >> y2 >> z2;
+    if(aon == nullptr)
+    {
+        //ask user for point coordinates
+        std::cout << "coordinates for V1 and V2 format: x1,y1,z1,x2,y2,z2" << std::endl;
+        std::cin >> x1 >> y1 >> z1 >> x2 >> y2 >> z2;
+    }
+    else
+    {
+        x1 = aon[0][0];
+        y1 = aon[0][1];
+        z1 = aon[0][2];
+        x2 = aon[1][0];
+        y2 = aon[1][1];
+        z2 = aon[1][2];
+    }
     v1->coordinates = Vec3f(x1, y1, z1);
     v1->outgoingHE = he1;
     v2->coordinates = Vec3f(x2, y2, z2);
@@ -115,7 +136,7 @@ void HalfEdgeDS::MVVELS()
     he2->prevHE = he1;
 }
 
-void HalfEdgeDS::MEV(Vertex* v)
+void HalfEdgeDS::MEV(Vertex* v, float aon[] = nullptr)
 {
     //create needed Elements
     Vertex* vNew = new Vertex;
@@ -134,11 +155,20 @@ void HalfEdgeDS::MEV(Vertex* v)
     halfEdges.push_back(he1);
     halfEdges.push_back(he2);
 
-    //create topology
     float x,y,z;
-    //ask user for point coordinates
-    std::cout << "coordinates for new vertex format: x,y,z" << std::endl;
-    std::cin >> x >> y >> z;
+    //create topology
+    if(aon == nullptr)
+    {
+        //ask user for point coordinates
+        std::cout << "coordinates for new vertex format: x,y,z" << std::endl;
+        std::cin >> x >> y >> z;
+    }
+    else
+    {
+        x = aon[0];
+        y = aon[1];
+        z = aon[2];
+    }
     vNew->coordinates = Vec3f(x, y, z);
 
     e->he1 = he1;
