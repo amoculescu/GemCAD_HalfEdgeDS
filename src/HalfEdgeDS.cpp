@@ -18,6 +18,15 @@ HalfEdgeDS::~HalfEdgeDS()
 void HalfEdgeDS::createDefaultObject()
 {
     float defObjCoord[][3] =   {{0.0f, 0.0f, 0.0f}, //array with containing arrays of coordinates for the vertices
+                                {0.0f, 2.0f, 0.0f},
+                                {0.0f, 4.0f, 0.0f},
+                                {-2.0f, 2.0f, 0.0f},
+                                {0.0f, 6.0f, 0.0f},
+                                {0.0f, 2.0f, 2.0f},
+                                {2.0f, 2.0f, 0.0f},
+                                {0.0f, 2.0f, -2.0f},
+                               };
+    /*float defObjCoord[][3] =   {{0.0f, 0.0f, 0.0f}, //array with containing arrays of coordinates for the vertices
                                   {0.0f, 2.0f, 0.0f},
                                   {2.0f, 2.0f, 0.0f},
                                   {2.0f, 0.0f, 0.0f},
@@ -25,9 +34,23 @@ void HalfEdgeDS::createDefaultObject()
                                   {0.0f, 2.0f, 2.0f},
                                   {2.0f, 2.0f, 2.0f},
                                   {2.0f, 0.0f, 2.0f}
-                                 };
+                                 };*/
  mvvels(defObjCoord);
+ //next HE testing
+ auto ptrforedge = vertices.begin();
  auto ptrToLast = vertices.begin();
+ std::advance(ptrforedge, (vertices.size() -1 ));
+ std::advance(ptrToLast, (vertices.size() -1 ));
+ MEV(*ptrToLast, defObjCoord[2]);
+ ptrToLast = vertices.begin();
+ std::advance(ptrToLast, (vertices.size() -1 ));
+ MEV(*ptrToLast, defObjCoord[4]);
+ MEV(*ptrforedge, defObjCoord[3]);
+ MEV(*ptrforedge, defObjCoord[5]);
+ MEV(*ptrforedge, defObjCoord[6]);
+ MEV(*ptrforedge, defObjCoord[7]);
+
+ /*auto ptrToLast = vertices.begin();
  for (int i = 2; i < 4; i++)
  {
      ptrToLast = vertices.begin();
@@ -56,7 +79,7 @@ void HalfEdgeDS::createDefaultObject()
  ptrToLast = vertices.begin();
  std::advance(ptrToFirst, (vertices.size() - 4));
  std::advance(ptrToLast, (vertices.size() -1 ));
- MEL(*ptrToFirst, *ptrToLast);
+ MEL(*ptrToFirst, *ptrToLast);*/
 
 	// CARE: for every "new" we need a "delete". if an element is added to the according list, it is deleted automatically within clearDS().
 
@@ -179,40 +202,62 @@ void HalfEdgeDS::MEV(Vertex* v, float aon[] = nullptr)
     he2->toEdge = e;
     he2->toLoop = v->outgoingHE->toLoop;
 
-    //determine where Edge is created (front, end, middle)
-    if(v->outgoingHE == v->outgoingHE->toEdge->he1) //edge is being created at the beginning
+    if(v->outgoingHE->nextHE->nextHE != v->outgoingHE)
     {
+        vNew->outgoingHE = he1;
+        he1->startV = vNew;
+        he1->nextHE = getOppositeHE(v->outgoingHE)->nextHE;
+        he1->prevHE = he2;
+        he2->startV = v;
+        he2->nextHE = he1;
+        he2->prevHE = getOppositeHE(v->outgoingHE);
+        getOppositeHE(v->outgoingHE)->nextHE->prevHE = he1;
+        getOppositeHE(v->outgoingHE)->nextHE = he2;
+        v->outgoingHE = he2;
+    }
+    else
+    {
+        vNew->outgoingHE = he1;
         he1->startV = vNew;
         he1->nextHE = v->outgoingHE;
         he1->prevHE = he2;
         he2->startV = v;
         he2->nextHE = he1;
-        he2->prevHE = v->outgoingHE->toEdge->he2;
-        vNew->outgoingHE = he1;
-        //make previous half-edges point to new ones
-        v->outgoingHE->toEdge->he1->prevHE = he1;
-        v->outgoingHE->toEdge->he2->nextHE = he2;
+        he2->prevHE = getOppositeHE(v->outgoingHE);
+        v->outgoingHE->prevHE = he1;
+        getOppositeHE(v->outgoingHE)->nextHE = he2;
         v->outgoingHE = he2;
     }
-    else if(v->outgoingHE == v->outgoingHE->toEdge->he2) //edge is being created at the end
-    {
-        he1->startV = v;
-        he1->nextHE = he2;
-        he1->prevHE = v->outgoingHE->toEdge->he1;
-        he2->startV = vNew;
-        he2->nextHE = v->outgoingHE;
-        he2->prevHE = he1;
-        vNew->outgoingHE = he2;
-        //make previous half-edges point to new ones
-        v->outgoingHE->toEdge->he1->nextHE = he1;
-        v->outgoingHE->toEdge->he2->prevHE = he2;
-        v->outgoingHE = he1;
-    }
-    //TODO: edge being created not at beginning or end;   edge being attached to complete Object
 }
-
 void HalfEdgeDS::MEL(Vertex* v1, Vertex* v2)
 {
+    /*Vertex* middlePoint;
+    float maxX, maxY, maxZ;
+    int interator = 0;;
+    middlePoint = vertices.front();
+    maxX = middlePoint->coordinates.x;
+    maxY = middlePoint->coordinates.y;
+    maxZ = middlePoint->coordinates.z;
+    while (iterator <= vertices.end())
+    {
+        std::advance(middlePoint, iterator);
+        if(middlePoint->coordinates.x > maxX)
+        {
+            maxX = middlePoint->coordinates.x;
+        }
+        if(middlePoint->coordinates.y > maxY)
+        {
+            maxY = middlePoint->coordinates.y;
+        }
+        if(middlePoint->coordinates.Z > maxZ)
+        {
+            maxZ = middlePoint->coordinates.z;
+        }
+        iterator++;
+    }
+    middlePoint = new Vertex;
+    middlePoint->coordinates = Vec3f((maxX / 2), (maxY / 2), (maxZ) / 2);
+
     //create new elements
     Loop* l = new Loop;
     Face* f = new Face;
@@ -240,43 +285,39 @@ void HalfEdgeDS::MEL(Vertex* v1, Vertex* v2)
     e->he1 = he1;
     e->he2 = he2;
 
+    he1->startV = v1;
     he1->toEdge = e;
-    he1->toLoop = l;
+    he1->toLoop = v1->outgoingHE->toLoop;
+    he2->startV = v2;
     he2->toEdge = e;
-    he2->toLoop = v1->outgoingHE->toLoop;
+    he2->toLoop = l;
 
-    if(v1->outgoingHE == v1->outgoingHE->toEdge->he1) //if v1 == first Vertex
+    he1->nextHE = v2->outgoingHE;
+    he1->prevHE = v1->outgoingHE->toEdge->he1;
+    he2->nextHE = v1->outgoingHE->toEdge->he1->nextHE;
+    he2->prevHE = v2->outgoingHE->toEdge->he1;
+    //update old connections
+    v1->outgoingHE->toEdge->he1->nextHE->prevHE = he2;
+    v1->outgoingHE->toEdge->he1->nextHE = he1;
+    v2->outgoingHE->prevHE->nextHE = he2;
+    v2->outgoingHE->prevHE = he1;
+    v1->outgoingHE = he1;
+    v2->outgoingHE = he2;
+    /*else //if v1 == last Vertex
     {
         he1->startV = v2;
-        he1->nextHE = v1->outgoingHE->toEdge->he1;
-        he1->prevHE = v2->outgoingHE->toEdge->he1;
+        he1->nextHE = v2->outgoingHE;
+        he1->prevHE = v1->outgoingHE->toEdge->he1;
         he2->startV = v1;
-        he2->nextHE = v1->outgoingHE->toEdge->he2;
-        he2->prevHE = v2->outgoingHE->toEdge->he2;
+        he2->nextHE = v2->outgoingHE->toEdge->he1->nextHE;
+        he2->prevHE = v1->outgoingHE->prevHE;
         //update old connections
-        v1->outgoingHE->toEdge->he1->prevHE = he1;
-        v1->outgoingHE->toEdge->he2->nextHE = he2;
-        v2->outgoingHE->toEdge->he1->nextHE = he1;
-        v2->outgoingHE->toEdge->he2->prevHE = he2;
+        v1->outgoingHE->prevHE->nextHE = he2;
+        v1->outgoingHE->prevHE = he1;
+        v2->outgoingHE->prevHE->nextHE = he1;
+        v2->outgoingHE->prevHE = he2;
         v1->outgoingHE = he2;
         v2->outgoingHE = he1;
-
-     }
-    else //if v1 == last Vertex
-    {
-        he1->startV = v1;
-        he1->nextHE = v2->outgoingHE->toEdge->he1;
-        he1->prevHE = v1->outgoingHE->toEdge->he1;
-        he2->startV = v2;
-        he2->nextHE = v2->outgoingHE->toEdge->he2;
-        he2->prevHE = v1->outgoingHE->toEdge->he2;
-        //update old connections
-        v1->outgoingHE->toEdge->he1->nextHE = he1;
-        v1->outgoingHE->toEdge->he2->prevHE = he2;
-        v2->outgoingHE->toEdge->he1->prevHE = he1;
-        v2->outgoingHE->toEdge->he2->nextHE = he2;
-        v1->outgoingHE = he1;
-        v2->outgoingHE = he2;
     }
     HalfEdge* tempHE = new HalfEdge;
     tempHE = he1->nextHE;
@@ -285,7 +326,19 @@ void HalfEdgeDS::MEL(Vertex* v1, Vertex* v2)
         tempHE->toLoop = l;
         tempHE = tempHE->nextHE;
     }
-    //TODO: test for mistakes in connections;
+    //TODO: test for mistakes in connections;*/
+}
+
+HalfEdge* HalfEdgeDS::getOppositeHE(HalfEdge* he)
+{
+    if(he == he->toEdge->he1)
+    {
+        return he->toEdge->he2;
+    }
+    else
+    {
+        return he->toEdge->he1;
+    }
 }
 
 void HalfEdgeDS::clearDS()

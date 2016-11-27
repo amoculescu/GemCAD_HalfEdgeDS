@@ -103,17 +103,17 @@ void renderCS()
 	// x
 	glPushMatrix();
 	glColor3f(1, 0, 0); 
-	renderArrow(Vec3f(0.0f, 0.0f, 0.0f), Vec3f(1.0f, 0.0f, 0.0f), 0.04f);
+    renderArrow(Vec3f(0.0f, 0.0f, 0.0f), Vec3f(1.0f, 0.0f, 0.0f), 0.1f);
 	glPopMatrix();
 	// y
 	glPushMatrix();
 	glColor3f(0, 1, 0);
-	renderArrow(Vec3f(0.0f, 0.0f, 0.0f), Vec3f(0.0f, 1.0f, 0.0f), 0.04f);
+    renderArrow(Vec3f(0.0f, 0.0f, 0.0f), Vec3f(0.0f, 1.0f, 0.0f), 0.1f);
 	glPopMatrix();
 	// z
 	glPushMatrix();
 	glColor3f(0, 0, 1);
-	renderArrow(Vec3f(0.0f, 0.0f, 0.0f), Vec3f(0.0f, 0.0f, 1.0f), 0.04f);
+    renderArrow(Vec3f(0.0f, 0.0f, 0.0f), Vec3f(0.0f, 0.0f, 1.0f), 0.1f);
 	glPopMatrix();
 }
 
@@ -135,8 +135,8 @@ void renderScene()
 	renderDS(heDS);
 	// draw 3D objects with lighting
 	glEnable(GL_LIGHTING);
-	renderHEActive(activeHE);
-	renderCS();	
+    renderHEActive(activeHE);
+    renderCS();
 	// swap Buffers
 	glFlush();
 	glutSwapBuffers();
@@ -145,6 +145,7 @@ void renderScene()
 // =================
 // === CALLBACKS ===
 // =================
+
 
 void keyPressed(unsigned char key, int x, int y)
 {
@@ -163,8 +164,29 @@ void keyPressed(unsigned char key, int x, int y)
 	case 'r':
 	case 'R':
 		setDefaults();
-		glutPostRedisplay();	// use this whenever 3D data changed to redraw the scene
+        glutPostRedisplay();// use this whenever 3D data changed to redraw the scene
 		break;
+    case 'a':
+    case 'A':
+        if (heDS.getHalfEdges().size() > 0) activeHE = heDS.getHalfEdges().front();
+        else activeHE = nullptr;
+        renderHEActive(activeHE);
+        glutPostRedisplay();
+        break;
+    case 'n':
+    case 'N':
+        activeHE = activeHE->nextHE;
+        renderHEActive(activeHE);
+        glutPostRedisplay();
+        break;
+    case 'p':
+    case 'P':
+        activeHE = activeHE->prevHE;
+        renderHEActive(activeHE);
+        glutPostRedisplay();
+        break;
+
+
 
 	// TODO: Provide a navigation functionality to traverse the data structure via the half-edges (next, previous, opposite, loop-switch) using the keyboard.
 	// Note: To highlight the active half-edge just set the variable 'activeHE' which will already be rendered using the 'renderHEActive' method!
@@ -220,7 +242,9 @@ void coutHelp()
 	std::cout << "H: show this (H)elp file" << std::endl;
 	std::cout << "R: (R)eset view" << std::endl;
 	std::cout << "====== DS NAVIGATION =====" << std::endl;
-	std::cout << "N: (N)ext half edge" << std::endl;
-	std::cout << "==========================" << std::endl;
+    std::cout << "A: Render (F)irst half edge" << std::endl;
+    std::cout << "N: (N)ext half edge" << std::endl;
+    std::cout << "P: Render (P)revious half edge" << std::endl;
+    std::cout << "==========================" << std::endl;
 	std::cout << std::endl;
 }
