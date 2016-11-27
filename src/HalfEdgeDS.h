@@ -61,7 +61,7 @@ public:
 	// TODO: Extend the interface of the this data structure by implementing at least three euler opertators
     void mvvels(float aon[][3]);
     void MEV(Vertex* v, float aon[]);
-    void MEL(Vertex* v1, Vertex* v2);
+    void MEL(Vertex* v1, Vertex* v2, bool front);
     HalfEdge* getOppositeHE(HalfEdge* he);
 	// TODO: Check if the data structure is correct using the Euler-Poincar'e formula
 

@@ -185,6 +185,13 @@ void keyPressed(unsigned char key, int x, int y)
         renderHEActive(activeHE);
         glutPostRedisplay();
         break;
+    case 'o':
+    case 'O':
+        activeHE = heDS.getOppositeHE(activeHE);
+        renderHEActive(activeHE);
+        glutPostRedisplay();
+        break;
+
 
 
 
@@ -245,6 +252,7 @@ void coutHelp()
     std::cout << "A: Render (F)irst half edge" << std::endl;
     std::cout << "N: (N)ext half edge" << std::endl;
     std::cout << "P: Render (P)revious half edge" << std::endl;
+    std::cout << "O: Render (O)pposite half edge" << std::endl;
     std::cout << "==========================" << std::endl;
 	std::cout << std::endl;
 }

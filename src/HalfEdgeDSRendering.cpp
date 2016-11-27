@@ -79,7 +79,7 @@ void renderV(const Vertex* v, const Vec3f& color)
 void renderHEActive(const HalfEdge* he)
 {
     glColor3fv(&colorWhite.x);
-    renderArrow(he->startV->coordinates, he->nextHE->startV->coordinates, 0.02);
+    renderArrow(he->startV->coordinates, he->nextHE->startV->coordinates, 0.04);
 	// TODO: render the currently selected half-edge.
 	// use renderArrow method to visualize the direction of the half-edge
 }

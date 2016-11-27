@@ -17,16 +17,13 @@ HalfEdgeDS::~HalfEdgeDS()
 
 void HalfEdgeDS::createDefaultObject()
 {
-    float defObjCoord[][3] =   {{0.0f, 0.0f, 0.0f}, //array with containing arrays of coordinates for the vertices
-                                {0.0f, 2.0f, 0.0f},
-                                {0.0f, 4.0f, 0.0f},
-                                {-2.0f, 2.0f, 0.0f},
-                                {0.0f, 6.0f, 0.0f},
-                                {0.0f, 2.0f, 2.0f},
-                                {2.0f, 2.0f, 0.0f},
-                                {0.0f, 2.0f, -2.0f},
-                               };
     /*float defObjCoord[][3] =   {{0.0f, 0.0f, 0.0f}, //array with containing arrays of coordinates for the vertices
+                                {0.0f, 2.0f, 0.0f},
+                                {2.0f, 2.0f, 0.0f},
+                                {2.0f, 0.0f, 0.0f},
+                                {2.0f, 0.0f, 2.0f}
+                               };*/
+    float defObjCoord[][3] =   {{0.0f, 0.0f, 0.0f}, //array with containing arrays of coordinates for the vertices
                                   {0.0f, 2.0f, 0.0f},
                                   {2.0f, 2.0f, 0.0f},
                                   {2.0f, 0.0f, 0.0f},
@@ -34,21 +31,50 @@ void HalfEdgeDS::createDefaultObject()
                                   {0.0f, 2.0f, 2.0f},
                                   {2.0f, 2.0f, 2.0f},
                                   {2.0f, 0.0f, 2.0f}
-                                 };*/
+                                 };
  mvvels(defObjCoord);
- //next HE testing
- auto ptrforedge = vertices.begin();
  auto ptrToLast = vertices.begin();
- std::advance(ptrforedge, (vertices.size() -1 ));
- std::advance(ptrToLast, (vertices.size() -1 ));
+ auto ptrToFirst = vertices.begin();
+ std::advance(ptrToLast, (vertices.size() - 1));
  MEV(*ptrToLast, defObjCoord[2]);
  ptrToLast = vertices.begin();
- std::advance(ptrToLast, (vertices.size() -1 ));
+ std::advance(ptrToLast, (vertices.size() - 1));
+ MEV(*ptrToLast, defObjCoord[3]);
+ ptrToLast = vertices.begin();
+ std::advance(ptrToLast, (vertices.size() - 1));
+ MEL(*ptrToFirst, *ptrToLast, true);
+ ptrToLast = vertices.begin();
  MEV(*ptrToLast, defObjCoord[4]);
- MEV(*ptrforedge, defObjCoord[3]);
- MEV(*ptrforedge, defObjCoord[5]);
- MEV(*ptrforedge, defObjCoord[6]);
- MEV(*ptrforedge, defObjCoord[7]);
+ ptrToLast = vertices.begin();
+ std::advance(ptrToLast, 1);
+ MEV(*ptrToLast, defObjCoord[5]);
+ ptrToLast = vertices.begin();
+ std::advance(ptrToLast, 2);
+ MEV(*ptrToLast, defObjCoord[6]);
+ ptrToLast = vertices.begin();
+ std::advance(ptrToLast, 3);
+ MEV(*ptrToLast, defObjCoord[7]);
+/* ptrToFirst = vertices.begin();
+ ptrToLast = vertices.begin();
+ std::advance(ptrToFirst, (vertices.size() - 4));
+ std::advance(ptrToLast, (vertices.size() - 3));
+ MEL(*ptrToFirst, *ptrToLast);
+ ptrToFirst = vertices.begin();
+ ptrToLast = vertices.begin();
+ std::advance(ptrToFirst, (vertices.size() - 3));
+ std::advance(ptrToLast, (vertices.size() - 2));
+ MEL(*ptrToFirst, *ptrToLast);
+ ptrToFirst = vertices.begin();
+ ptrToLast = vertices.begin();
+ std::advance(ptrToFirst, (vertices.size() - 2));
+ std::advance(ptrToLast, (vertices.size() - 1));
+ MEL(*ptrToFirst, *ptrToLast);
+ ptrToFirst = vertices.begin();
+ ptrToLast = vertices.begin();
+ std::advance(ptrToFirst, (vertices.size() - 4));
+ std::advance(ptrToLast, (vertices.size() - 1));
+ MEL(*ptrToFirst, *ptrToLast);*/
+
 
  /*auto ptrToLast = vertices.begin();
  for (int i = 2; i < 4; i++)
@@ -229,8 +255,70 @@ void HalfEdgeDS::MEV(Vertex* v, float aon[] = nullptr)
         v->outgoingHE = he2;
     }
 }
-void HalfEdgeDS::MEL(Vertex* v1, Vertex* v2)
+void HalfEdgeDS::MEL(Vertex* v1, Vertex* v2, bool front = true)
 {
+    //create new elements
+    Loop* l = new Loop;
+    Face* f = new Face;
+    Edge* e = new Edge;
+    HalfEdge* he1 = new HalfEdge;
+    HalfEdge* he2 = new HalfEdge;
+
+    loops.push_back(l);
+    faces.push_back(f);
+    edges.push_back(e);
+    halfEdges.push_back(he1);
+    halfEdges.push_back(he2);
+
+    f->toSolid = v1->outgoingHE->toLoop->toFace->toSolid;
+    f->outerLoop = l;
+    f->innerLoop = l;
+
+    l->nextLoop = l;
+    l->prevLoop = l;
+    l->toFace = f;
+
+    HalfEdge* hea[2];
+    hea[0] = he1;
+    hea[1] = he2;
+
+    int i, j;
+    if (front = true)
+    {
+        i = 0;
+        j = 1;
+     }
+    else
+    {
+        i = 1;
+        j = 0;
+    }
+
+    e->he1 = hea[i];
+    e->he2 = hea[j];
+
+    l->toHE = hea[i];
+
+    hea[i]->startV = v1;
+    hea[i]->toLoop = l;
+    hea[i]->toEdge = e;
+    hea[i]->nextHE = v2->outgoingHE;
+    hea[i]->prevHE = getOppositeHE(v1->outgoingHE);
+    hea[j]->startV = v2;
+    hea[j]->toLoop = v1->outgoingHE->toLoop;
+    hea[j]->toEdge = e;
+    hea[j]->nextHE = v1->outgoingHE;
+    hea[j]->prevHE = getOppositeHE(v2->outgoingHE);
+
+//    getOppositeHE(v1->outgoingHE)->nextHE = hea[i];
+    v2->outgoingHE->prevHE = hea[i];
+    getOppositeHE(v1->outgoingHE)->nextHE = hea[i];
+    v1->outgoingHE->prevHE = hea[j];
+    getOppositeHE(v2->outgoingHE)->nextHE = hea[j];
+    v1->outgoingHE = hea[i];
+    v2->outgoingHE = hea[j];
+
+
     /*Vertex* middlePoint;
     float maxX, maxY, maxZ;
     int interator = 0;;
