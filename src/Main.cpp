@@ -103,17 +103,17 @@ void renderCS()
 	// x
 	glPushMatrix();
 	glColor3f(1, 0, 0); 
-    renderArrow(Vec3f(0.0f, 0.0f, 0.0f), Vec3f(1.0f, 0.0f, 0.0f), 0.1f);
+    renderArrow(Vec3f(0.0f, 0.0f, 0.0f), Vec3f(1.0f, 0.0f, 0.0f), 0.05f);
 	glPopMatrix();
 	// y
 	glPushMatrix();
 	glColor3f(0, 1, 0);
-    renderArrow(Vec3f(0.0f, 0.0f, 0.0f), Vec3f(0.0f, 1.0f, 0.0f), 0.1f);
+    renderArrow(Vec3f(0.0f, 0.0f, 0.0f), Vec3f(0.0f, 1.0f, 0.0f), 0.05f);
 	glPopMatrix();
 	// z
 	glPushMatrix();
 	glColor3f(0, 0, 1);
-    renderArrow(Vec3f(0.0f, 0.0f, 0.0f), Vec3f(0.0f, 0.0f, 1.0f), 0.1f);
+    renderArrow(Vec3f(0.0f, 0.0f, 0.0f), Vec3f(0.0f, 0.0f, 1.0f), 0.05f);
 	glPopMatrix();
 }
 
@@ -199,12 +199,21 @@ void keyPressed(unsigned char key, int x, int y)
                 std::cout << "No Half Edge selected!" << std::endl;
                 break;
             }
+        case '2':
+            heDS.MEV(activeHE, nullptr);
+            glutPostRedisplay();
+            std::cout << heDS << std::endl << std::endl;
+            break;
 
         case '3':
             auto myVertex = heDS.getVertices().begin();
-            std::advance(myVertex, 2);
+            int iterator;
+            std::cout << "Select Vertex" << std::endl;
+            std::cin >> iterator;
+            std::advance(myVertex, iterator - 1);
             heDS.MEL(activeHE, *myVertex, true);
             glutPostRedisplay();
+            std::cout << heDS << std::endl << std::endl;
             break;
     }
 
