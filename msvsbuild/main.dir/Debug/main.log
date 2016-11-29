@@ -1,0 +1,10 @@
+﻿  Building Custom Rule C:/Users/Paddy/Desktop/GMCAD_PR1/shared_new/GemCAD_HalfEdgeDS/src/CMakeLists.txt
+  CMake does not need to re-run because C:\Users\Paddy\Desktop\GMCAD_PR1\shared_new\GemCAD_HalfEdgeDS\msvsbuild\CMakeFiles\generate.stamp is up-to-date.
+  HalfEdgeDS.cpp
+  HalfEdgeDSElements.cpp
+  HalfEdgeDSRendering.cpp
+C:\Users\Paddy\Desktop\GMCAD_PR1\shared_new\GemCAD_HalfEdgeDS\src\HalfEdgeDSRendering.cpp(67): warning C4305: "Argument": Verkürzung von "double" in "float"
+C:\Users\Paddy\Desktop\GMCAD_PR1\shared_new\GemCAD_HalfEdgeDS\src\HalfEdgeDSRendering.cpp(82): warning C4305: "Argument": Verkürzung von "double" in "float"
+  Main.cpp
+  Code wird generiert...
+  main.vcxproj -> C:\Users\Paddy\Desktop\GMCAD_PR1\shared_new\GemCAD_HalfEdgeDS\msvsbuild\Debug\main.exe

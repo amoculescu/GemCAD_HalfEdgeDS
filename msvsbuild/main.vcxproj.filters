@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\Paddy\Desktop\GMCAD_PR1\shared_new\GemCAD_HalfEdgeDS\src\HalfEdgeDS.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Paddy\Desktop\GMCAD_PR1\shared_new\GemCAD_HalfEdgeDS\src\HalfEdgeDSElements.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Paddy\Desktop\GMCAD_PR1\shared_new\GemCAD_HalfEdgeDS\src\HalfEdgeDSRendering.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Paddy\Desktop\GMCAD_PR1\shared_new\GemCAD_HalfEdgeDS\src\Main.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\Paddy\Desktop\GMCAD_PR1\shared_new\GemCAD_HalfEdgeDS\src\HalfEdgeDS.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Paddy\Desktop\GMCAD_PR1\shared_new\GemCAD_HalfEdgeDS\src\HalfEdgeDSElements.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Paddy\Desktop\GMCAD_PR1\shared_new\GemCAD_HalfEdgeDS\src\HalfEdgeDSRendering.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Paddy\Desktop\GMCAD_PR1\shared_new\GemCAD_HalfEdgeDS\src\Main.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Paddy\Desktop\GMCAD_PR1\shared_new\GemCAD_HalfEdgeDS\src\Vec3.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Paddy\Desktop\GMCAD_PR1\shared_new\GemCAD_HalfEdgeDS\src\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header">
+      <UniqueIdentifier>{2FA59285-C17E-3D78-8054-A77990D5CE95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{540B8B0C-5704-36D2-AFB4-A34B9FFC87BB}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

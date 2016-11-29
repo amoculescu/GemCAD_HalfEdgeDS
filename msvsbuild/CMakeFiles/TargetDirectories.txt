@@ -1,0 +1,3 @@
+C:/Users/Paddy/Desktop/GMCAD_PR1/shared_new/GemCAD_HalfEdgeDS/msvsbuild/CMakeFiles/main.dir
+C:/Users/Paddy/Desktop/GMCAD_PR1/shared_new/GemCAD_HalfEdgeDS/msvsbuild/CMakeFiles/ALL_BUILD.dir
+C:/Users/Paddy/Desktop/GMCAD_PR1/shared_new/GemCAD_HalfEdgeDS/msvsbuild/CMakeFiles/ZERO_CHECK.dir

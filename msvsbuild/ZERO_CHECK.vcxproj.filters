@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Paddy\Desktop\GMCAD_PR1\shared_new\GemCAD_HalfEdgeDS\msvsbuild\CMakeFiles\dd2298cf65aca1aeb8907dbe2092f17d\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{B16B17EB-12AC-3F85-932A-6364E5033A42}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

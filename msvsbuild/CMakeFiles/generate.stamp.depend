@@ -1,0 +1,31 @@
+# CMake generation dependency list for this directory.
+C:/Users/Paddy/Desktop/GMCAD_PR1/shared_new/GemCAD_HalfEdgeDS/src/CMakeLists.txt
+C:/Users/Paddy/Desktop/GMCAD_PR1/shared_new/GemCAD_HalfEdgeDS/msvsbuild/CMakeFiles/3.7.0/CMakeSystem.cmake
+C:/Program Files (x86)/CMake/share/cmake-3.7/Modules/CMakeSystemSpecificInitialize.cmake
+C:/Users/Paddy/Desktop/GMCAD_PR1/shared_new/GemCAD_HalfEdgeDS/msvsbuild/CMakeFiles/3.7.0/CMakeCCompiler.cmake
+C:/Users/Paddy/Desktop/GMCAD_PR1/shared_new/GemCAD_HalfEdgeDS/msvsbuild/CMakeFiles/3.7.0/CMakeCXXCompiler.cmake
+C:/Program Files (x86)/CMake/share/cmake-3.7/Modules/CMakeSystemSpecificInformation.cmake
+C:/Program Files (x86)/CMake/share/cmake-3.7/Modules/CMakeGenericSystem.cmake
+C:/Program Files (x86)/CMake/share/cmake-3.7/Modules/Platform/Windows.cmake
+C:/Program Files (x86)/CMake/share/cmake-3.7/Modules/Platform/WindowsPaths.cmake
+C:/Program Files (x86)/CMake/share/cmake-3.7/Modules/CMakeCInformation.cmake
+C:/Program Files (x86)/CMake/share/cmake-3.7/Modules/CMakeLanguageInformation.cmake
+C:/Program Files (x86)/CMake/share/cmake-3.7/Modules/Platform/Windows-MSVC-C.cmake
+C:/Program Files (x86)/CMake/share/cmake-3.7/Modules/Platform/Windows-MSVC.cmake
+C:/Users/Paddy/Desktop/GMCAD_PR1/shared_new/GemCAD_HalfEdgeDS/msvsbuild/CMakeFiles/3.7.0/CMakeRCCompiler.cmake
+C:/Program Files (x86)/CMake/share/cmake-3.7/Modules/CMakeRCInformation.cmake
+C:/Program Files (x86)/CMake/share/cmake-3.7/Modules/CMakeCommonLanguageInclude.cmake
+C:/Program Files (x86)/CMake/share/cmake-3.7/Modules/CMakeCXXInformation.cmake
+C:/Program Files (x86)/CMake/share/cmake-3.7/Modules/CMakeLanguageInformation.cmake
+C:/Program Files (x86)/CMake/share/cmake-3.7/Modules/Compiler/MSVC-CXX.cmake
+C:/Program Files (x86)/CMake/share/cmake-3.7/Modules/Platform/Windows-MSVC-CXX.cmake
+C:/Program Files (x86)/CMake/share/cmake-3.7/Modules/Platform/Windows-MSVC.cmake
+C:/Program Files (x86)/CMake/share/cmake-3.7/Modules/CMakeCommonLanguageInclude.cmake
+C:/Program Files (x86)/CMake/share/cmake-3.7/Modules/FindOpenGL.cmake
+C:/Program Files (x86)/CMake/share/cmake-3.7/Modules/FindPackageHandleStandardArgs.cmake
+C:/Program Files (x86)/CMake/share/cmake-3.7/Modules/FindPackageMessage.cmake
+C:/Program Files (x86)/CMake/share/cmake-3.7/Modules/CMakeParseArguments.cmake
+C:/Users/Paddy/Desktop/GMCAD_PR1/shared_new/GemCAD_HalfEdgeDS/src/FindGLUT.cmake
+C:/Users/Paddy/Desktop/GMCAD_PR1/shared_new/GemCAD_HalfEdgeDS/src/FindPackageHandleStandardArgs.cmake
+C:/Program Files (x86)/CMake/share/cmake-3.7/Modules/FindPackageMessage.cmake
+C:/Program Files (x86)/CMake/share/cmake-3.7/Modules/CMakeParseArguments.cmake
