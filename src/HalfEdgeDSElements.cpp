@@ -53,8 +53,8 @@ HalfEdge::HalfEdge()
 // TODO: create methods for creating and traversing its elements
 
 
-Vertex::Vertex()
-	: outgoingHE(nullptr)
+ Vertex::Vertex()
+    : outgoingHE(nullptr)
 	, coordinates(Vec3f())
 {
 }

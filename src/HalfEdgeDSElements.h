@@ -76,7 +76,7 @@ struct HalfEdge
 
 struct Vertex
 {
-	HalfEdge* outgoingHE;	// can be any outgoing half edge
+    HalfEdge* outgoingHE;	// can be any outgoing half edge
 	Vec3f coordinates;		// stores the 3d coordinates of the vertex
 	Vertex();
 	

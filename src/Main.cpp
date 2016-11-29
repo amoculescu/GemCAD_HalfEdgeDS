@@ -1,4 +1,4 @@
-#include "main.h"		// this header
+#include "Main.h"		// this header
 
 #include <stdlib.h>		// standard library
 #include <math.h>		// fmod
@@ -16,7 +16,7 @@ int main(int argc, char** argv)
 	// initialize openGL window
 	glutInit(&argc, argv);
 	glutInitWindowPosition(300, 200);
-	glutInitWindowSize(600, 400);
+    glutInitWindowSize(2000, 1200);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 	glutCreateWindow("TU Darmstadt, MBorner"); 
 	// link functions to certain openGL events
@@ -103,17 +103,17 @@ void renderCS()
 	// x
 	glPushMatrix();
 	glColor3f(1, 0, 0); 
-	renderArrow(Vec3f(0.0f, 0.0f, 0.0f), Vec3f(1.0f, 0.0f, 0.0f), 0.04f);
+    renderArrow(Vec3f(0.0f, 0.0f, 0.0f), Vec3f(1.0f, 0.0f, 0.0f), 0.05f);
 	glPopMatrix();
 	// y
 	glPushMatrix();
 	glColor3f(0, 1, 0);
-	renderArrow(Vec3f(0.0f, 0.0f, 0.0f), Vec3f(0.0f, 1.0f, 0.0f), 0.04f);
+    renderArrow(Vec3f(0.0f, 0.0f, 0.0f), Vec3f(0.0f, 1.0f, 0.0f), 0.05f);
 	glPopMatrix();
 	// z
 	glPushMatrix();
 	glColor3f(0, 0, 1);
-	renderArrow(Vec3f(0.0f, 0.0f, 0.0f), Vec3f(0.0f, 0.0f, 1.0f), 0.04f);
+    renderArrow(Vec3f(0.0f, 0.0f, 0.0f), Vec3f(0.0f, 0.0f, 1.0f), 0.05f);
 	glPopMatrix();
 }
 
@@ -135,8 +135,8 @@ void renderScene()
 	renderDS(heDS);
 	// draw 3D objects with lighting
 	glEnable(GL_LIGHTING);
-	renderHEActive(activeHE);
-	renderCS();	
+    renderHEActive(activeHE);
+    renderCS();
 	// swap Buffers
 	glFlush();
 	glutSwapBuffers();
@@ -146,29 +146,104 @@ void renderScene()
 // === CALLBACKS ===
 // =================
 
+
 void keyPressed(unsigned char key, int x, int y)
 {
 	switch (key)
 	{
-		// ESC => exit
-	case 27:
-		exit(0);
-		break;
-		// help file
-	case 'h' :
-	case 'H' :
-		coutHelp();
-		break;
-		// reset view
-	case 'r':
-	case 'R':
-		setDefaults();
-		glutPostRedisplay();	// use this whenever 3D data changed to redraw the scene
-		break;
+            // ESC => exit
+        case 27:
+            exit(0);
+            break;
+            // help file
+        case 'h' :
+        case 'H' :
+            coutHelp();
+            break;
+            // reset view
+        case 'c' :
+        case 'C' :
+            activeHE = nullptr;
+            heDS.clearDS();
+            glutPostRedisplay();// use this whenever 3D data changed to redraw the scene
+            break;
+        // reset view
+        case 'r':
+        case 'R':
+            setDefaults();
+            glutPostRedisplay();// use this whenever 3D data changed to redraw the scene
+            break;
+        case 'a':
+        case 'A':
+            if (heDS.getHalfEdges().size() > 0) activeHE = heDS.getHalfEdges().front();
+            else activeHE = nullptr;
+            renderHEActive(activeHE);
+            glutPostRedisplay();
+            break;
+        case 'n':
+        case 'N':
+            activeHE = activeHE->nextHE;
+            renderHEActive(activeHE);
+            glutPostRedisplay();
+            break;
+        case 'p':
+        case 'P':
+            activeHE = activeHE->prevHE;
+            renderHEActive(activeHE);
+            glutPostRedisplay();
+            break;
+        case 'o':
+        case 'O':
+            if (activeHE != nullptr)
+            {
+                activeHE = heDS.getOppositeHE(activeHE);
+                renderHEActive(activeHE);
+                glutPostRedisplay();
+                break;
+            }
+            else
+            {
+                std::cout << "No Half Edge selected!" << std::endl;
+                break;
+            }
+        case 's':
+        case 'S':
+            savedHE = activeHE;
+            break;
+        case 'l':
+        case 'L':
+            if(activeHE->toLoop->toFace->innerLoop != nullptr)
+            {
+                activeHE = activeHE->toLoop->toFace->innerLoop->toHE;
+            }
+            break;
+        case 'e':
+        case 'E':
+            heDS.checkEuler();
+            break;
+        case '1':
+            heDS.mvvels(nullptr);
+            glutPostRedisplay();
+            std::cout << heDS << std::endl << std::endl;
+            break;
 
-	// TODO: Provide a navigation functionality to traverse the data structure via the half-edges (next, previous, opposite, loop-switch) using the keyboard.
-	// Note: To highlight the active half-edge just set the variable 'activeHE' which will already be rendered using the 'renderHEActive' method!
-	}		
+        case '2':
+            heDS.MEV(activeHE, nullptr);
+            glutPostRedisplay();
+            std::cout << heDS << std::endl << std::endl;
+            break;
+
+        case '3':
+            heDS.MEL(savedHE, activeHE->startV, true);
+            glutPostRedisplay();
+            std::cout << heDS << std::endl << std::endl;
+            break;
+        case '4':
+            heDS.KEMH(activeHE);
+            glutPostRedisplay();
+            std::cout << heDS << std::endl << std::endl;
+            break;
+    }
 
 }
 
@@ -219,8 +294,17 @@ void coutHelp()
 	std::cout << "ESC: exit" << std::endl;
 	std::cout << "H: show this (H)elp file" << std::endl;
 	std::cout << "R: (R)eset view" << std::endl;
+    std::cout << "C: (C)lear data structure" << std::endl;
 	std::cout << "====== DS NAVIGATION =====" << std::endl;
-	std::cout << "N: (N)ext half edge" << std::endl;
-	std::cout << "==========================" << std::endl;
+    std::cout << "1: MEVVLS" << std::endl;
+    std::cout << "2: MEV" << std::endl;
+    std::cout << "3: MEL" << std::endl;
+    std::cout << "A: Render (F)irst half edge" << std::endl;
+    std::cout << "E: Check Euler-Poincare formula" << std::endl;
+    std::cout << "N: (N)ext half edge" << std::endl;
+    std::cout << "O: Render (O)pposite half edge" << std::endl;
+    std::cout << "P: Render (P)revious half edge" << std::endl;
+    std::cout << "S: (S)ave current half edge" << std::endl;
+    std::cout << "==========================" << std::endl;
 	std::cout << std::endl;
 }
