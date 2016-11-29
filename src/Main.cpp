@@ -215,6 +215,7 @@ void keyPressed(unsigned char key, int x, int y)
             if(activeHE->toLoop->toFace->innerLoop != nullptr)
             {
                 activeHE = activeHE->toLoop->nextLoop->toHE;
+                glutPostRedisplay();
             }
             break;
         case 'e':
@@ -232,7 +233,7 @@ void keyPressed(unsigned char key, int x, int y)
             std::cout << heDS << std::endl << std::endl;
             break;
         case '3':
-            heDS.MEL(savedHE, activeHE->startV, true);
+            heDS.MEL(savedHE, activeHE->startV);
             glutPostRedisplay();
             std::cout << heDS << std::endl << std::endl;
             break;

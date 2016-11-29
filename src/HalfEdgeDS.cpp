@@ -18,18 +18,23 @@ HalfEdgeDS::~HalfEdgeDS()
 void HalfEdgeDS::createDefaultObject()
 {
     float defObjCoord[][3] =   {{1.0f, 1.0f, 0.0f}, //array with containing arrays of coordinates for the vertices
-                                  {1.0f, 6.0f, 0.0f},
-                                  {6.0f, 1.0f, 0.0f},
-                                  {6.0f, 6.0f, 0.0f},
-                                  {1.0f, 1.0f, -5.0f},
-                                  {1.0f, 6.0f, -5.0f},
-                                  {6.0f, 6.0f, -5.0f},
-                                  {6.0f, 1.0f, -5.0f},
-                                  {2.0f, 1.0f, -2.0f},
-                                  {4.0f, 1.0f, -2.0f},
-                                  {4.0f, 1.0f, -4.0f},
-                                  {2.0f, 1.0f, -4.0f},
-                                 };
+                                {1.0f, 6.0f, 0.0f},
+                                {6.0f, 1.0f, 0.0f},
+                                {6.0f, 6.0f, 0.0f},
+                                {1.0f, 1.0f, -5.0f},
+                                {1.0f, 6.0f, -5.0f},
+                                {6.0f, 6.0f, -5.0f},
+                                {6.0f, 1.0f, -5.0f},
+                                {2.0f, 1.0f, -2.0f},
+                                {4.0f, 1.0f, -2.0f},
+                                {4.0f, 1.0f, -4.0f},
+                                {2.0f, 1.0f, -4.0f},
+                                {2.0f, 3.0f, -2.0f},
+                                {2.0f, 3.0f, -4.0f},
+                                {4.0f, 3.0f, -4.0f},
+                                {4.0f, 3.0f, -2.0f}
+                               };
+    //first face
     mvvels(defObjCoord);
     auto ptrToHalfEdge = halfEdges.begin();
     auto ptrToVertex = vertices.begin();
@@ -39,7 +44,8 @@ void HalfEdgeDS::createDefaultObject()
     ptrToHalfEdge = halfEdges.begin();
     std::advance(ptrToHalfEdge, 5);
     std::advance(ptrToVertex, 2);
-    MEL(*ptrToHalfEdge, *ptrToVertex, true);
+    //4 edges for each Vertex in Face
+    MEL(*ptrToHalfEdge, *ptrToVertex);
     ptrToHalfEdge = halfEdges.begin();
     MEV(*ptrToHalfEdge, defObjCoord[4]);
     std::advance(ptrToHalfEdge, 4);
@@ -50,29 +56,87 @@ void HalfEdgeDS::createDefaultObject()
     ptrToHalfEdge = halfEdges.begin();
     std::advance(ptrToHalfEdge, 3);
     MEV(*ptrToHalfEdge, defObjCoord[7]);
+    //close all 5 remaining Faces
     ptrToHalfEdge = halfEdges.begin();
     ptrToVertex = vertices.begin();
     std::advance(ptrToHalfEdge, 15);
     std::advance(ptrToVertex, 4);
-    MEL(*ptrToHalfEdge, *ptrToVertex, true);
+    MEL(*ptrToHalfEdge, *ptrToVertex);
     ptrToHalfEdge = halfEdges.begin();
     std::advance(ptrToHalfEdge, 11);
-    MEL(*ptrToHalfEdge, *ptrToVertex, true);
+    MEL(*ptrToHalfEdge, *ptrToVertex);
     ptrToHalfEdge = halfEdges.begin();
     ptrToVertex = vertices.begin();
     std::advance(ptrToHalfEdge, 17);
     std::advance(ptrToVertex, 6);
-    MEL(*ptrToHalfEdge, *ptrToVertex, true);
+    MEL(*ptrToHalfEdge, *ptrToVertex);
     ptrToHalfEdge = halfEdges.begin();
     ptrToVertex = vertices.begin();
     std::advance(ptrToHalfEdge, 11);
     std::advance(ptrToVertex, 6);
-    MEL(*ptrToHalfEdge, *ptrToVertex, true);
+    MEL(*ptrToHalfEdge, *ptrToVertex);
+    //Outer Object Done
+
+    //Make Hole
+    ptrToHalfEdge = halfEdges.begin();
+    std::advance(ptrToHalfEdge, 8);
+    MEV(*ptrToHalfEdge, defObjCoord[8]);
+    ptrToHalfEdge = halfEdges.begin();
+    std::advance(ptrToHalfEdge, (halfEdges.size() - 1));
+    MEV(*ptrToHalfEdge, defObjCoord[9]);
+    ptrToHalfEdge = halfEdges.begin();
+    std::advance(ptrToHalfEdge, (halfEdges.size() - 1));
+    MEV(*ptrToHalfEdge, defObjCoord[10]);
+    ptrToHalfEdge = halfEdges.begin();
+    std::advance(ptrToHalfEdge, (halfEdges.size() - 1));
+    MEV(*ptrToHalfEdge, defObjCoord[11]);
+    ptrToHalfEdge = halfEdges.begin();
+    std::advance(ptrToHalfEdge, (halfEdges.size() - 1));
+    ptrToVertex = vertices.begin();
+    std::advance(ptrToVertex, 8);
+    MEL(*ptrToHalfEdge, *ptrToVertex);
+    ptrToHalfEdge = halfEdges.begin();
+    std::advance(ptrToHalfEdge, (halfEdges.size() - 1));
+    KEMH((*ptrToHalfEdge)->nextHE);
+    //created hole in face
 
 
-	// CARE: for every "new" we need a "delete". if an element is added to the according list, it is deleted automatically within clearDS().
-
-	// TODO: Create a new VALID test object including all topological elements and linkage. The object should be volumetric and consist of at least one hole (H > 0).
+    //make hole volumetric
+    //create Edges for each vertex
+    ptrToHalfEdge = halfEdges.begin();
+    std::advance(ptrToHalfEdge, (halfEdges.size() - 1));
+    MEV(getOppositeHE(*ptrToHalfEdge), defObjCoord[12]);
+    ptrToHalfEdge = halfEdges.begin();
+    std::advance(ptrToHalfEdge, (halfEdges.size() - 6));
+    MEV(getOppositeHE(*ptrToHalfEdge), defObjCoord[13]);
+    ptrToHalfEdge = halfEdges.begin();
+    std::advance(ptrToHalfEdge, (halfEdges.size() - 10));
+    MEV(getOppositeHE(*ptrToHalfEdge), defObjCoord[14]);
+    ptrToHalfEdge = halfEdges.begin();
+    std::advance(ptrToHalfEdge, (halfEdges.size() - 14));
+    MEV(getOppositeHE(*ptrToHalfEdge), defObjCoord[15]);
+    //close the faces
+    ptrToHalfEdge = halfEdges.begin();
+    ptrToVertex = vertices.begin();
+    std::advance(ptrToHalfEdge, 33);
+    std::advance(ptrToVertex, 13);
+    MEL(*ptrToHalfEdge, *ptrToVertex);
+    ptrToHalfEdge = halfEdges.begin();
+    ptrToVertex = vertices.begin();
+    std::advance(ptrToHalfEdge, 35);
+    std::advance(ptrToVertex, 14);
+    MEL(*ptrToHalfEdge, *ptrToVertex);
+    ptrToHalfEdge = halfEdges.begin();
+    ptrToVertex = vertices.begin();
+    std::advance(ptrToHalfEdge, 39);
+    std::advance(ptrToVertex, 12);
+    MEL(*ptrToHalfEdge, *ptrToVertex);
+    ptrToHalfEdge = halfEdges.begin();
+    ptrToVertex = vertices.begin();
+    std::advance(ptrToHalfEdge, 37);
+    std::advance(ptrToVertex, 15);
+    MEL(*ptrToHalfEdge, *ptrToVertex);
+    //Default object creation done!
 }
 
 void HalfEdgeDS::mvvels(float aon[][3] = nullptr)
@@ -206,7 +270,7 @@ void HalfEdgeDS::MEV(HalfEdge* he, float aon[] = nullptr)
 
 }
 
-void HalfEdgeDS::MEL(HalfEdge* he, Vertex* v2, bool front = true)
+void HalfEdgeDS::MEL(HalfEdge* he, Vertex* v2)
 {
     //create new elements
     Vertex* v1 = he->startV;
@@ -230,47 +294,32 @@ void HalfEdgeDS::MEL(HalfEdge* he, Vertex* v2, bool front = true)
     l->prevLoop = l;
     l->toFace = f;
 
-    HalfEdge* hea[2];
-    hea[0] = he1;
-    hea[1] = he2;
+    e->he1 = he1;
+    e->he2 = he2;
 
-    int i, j;
-    if (front = true)
-    {
-        i = 0;
-        j = 1;
-     }
-    else
-    {
-        i = 1;
-        j = 0;
-    }
-    e->he1 = hea[i];
-    e->he2 = hea[j];
-
-    l->toHE = hea[i];
+    l->toHE = he1;
 
     while(temp->startV != v2)
     {
         temp = temp->nextHE;
     }
 
-    hea[i]->startV = v2;
-    hea[i]->nextHE = he;
-    hea[i]->prevHE = temp->prevHE;
-    hea[i]->toEdge = e;
-    hea[i]->toLoop = he->toLoop;
+    he1->startV = v2;
+    he1->nextHE = he;
+    he1->prevHE = temp->prevHE;
+    he1->toEdge = e;
+    he1->toLoop = he->toLoop;
 
-    hea[j]->startV = v1;
-    hea[j]->nextHE = temp;
-    hea[j]->prevHE = he->prevHE;
-    hea[j]->toEdge = e;
-    hea[j]->toLoop = l;
+    he2->startV = v1;
+    he2->nextHE = temp;
+    he2->prevHE = he->prevHE;
+    he2->toEdge = e;
+    he2->toLoop = l;
 
-    he->prevHE->nextHE = hea[j];
-    he->prevHE = hea[i];
-    temp->prevHE->nextHE = hea[i];
-    temp->prevHE = hea[j];
+    he->prevHE->nextHE = he2;
+    he->prevHE = he1;
+    temp->prevHE->nextHE = he1;
+    temp->prevHE = he2;
 }
 
 HalfEdge* HalfEdgeDS::getOppositeHE(HalfEdge* he)
