@@ -206,11 +206,21 @@ void keyPressed(unsigned char key, int x, int y)
                 std::cout << "No Half Edge selected!" << std::endl;
                 break;
             }
-        case 'q':
-        case 'Q':
+        case 's':
+        case 'S':
             savedHE = activeHE;
             break;
-
+        case 'l':
+        case 'L':
+            if(activeHE->toLoop->toFace->innerLoop != nullptr)
+            {
+                activeHE = activeHE->toLoop->toFace->innerLoop->toHE;
+            }
+            break;
+        case 'e':
+        case 'E':
+            heDS.checkEuler();
+            break;
         case '1':
             heDS.mvvels(nullptr);
             glutPostRedisplay();
@@ -225,6 +235,11 @@ void keyPressed(unsigned char key, int x, int y)
 
         case '3':
             heDS.MEL(savedHE, activeHE->startV, true);
+            glutPostRedisplay();
+            std::cout << heDS << std::endl << std::endl;
+            break;
+        case '4':
+            heDS.KEMH(activeHE);
             glutPostRedisplay();
             std::cout << heDS << std::endl << std::endl;
             break;

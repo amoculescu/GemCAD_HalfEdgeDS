@@ -62,7 +62,9 @@ public:
     void mvvels(float aon[][3]);
     void MEV(HalfEdge* he, float aon[]);
     void MEL(HalfEdge* he, Vertex* v1, bool front);
+    void KEMH(HalfEdge* he);
     HalfEdge* getOppositeHE(HalfEdge* he);
+    void checkEuler();
 	// TODO: Check if the data structure is correct using the Euler-Poincar'e formula
 
 private:

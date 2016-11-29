@@ -28,7 +28,7 @@ void renderE(const Edge* e, const Vec3f& color)
 void renderHE(const HalfEdge* he, const Vec3f& color)
 {
     glColor3fv(&color.x);
-    renderArrow(he->startV->coordinates, he->nextHE->startV->coordinates, 0.04);
+    renderArrow(he->startV->coordinates, he->nextHE->startV->coordinates, 0.07);
 }
 
 void renderV(const Vertex* v, const Vec3f& color)

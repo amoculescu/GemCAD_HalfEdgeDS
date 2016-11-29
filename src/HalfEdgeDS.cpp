@@ -17,14 +17,14 @@ HalfEdgeDS::~HalfEdgeDS()
 
 void HalfEdgeDS::createDefaultObject()
 {
-    float defObjCoord[][3] =   {{0.0f, 0.0f, 0.0f}, //array with containing arrays of coordinates for the vertices
-                                  {0.0f, 2.0f, 0.0f},
-                                  {2.0f, 0.0f, 0.0f},
-                                  {2.0f, 2.0f, 0.0f},
-                                  {0.0f, 0.0f, -2.0f},
-                                  {0.0f, 2.0f, -2.0f},
-                                  {2.0f, 2.0f, -2.0f},
-                                  {2.0f, 0.0f, -2.0f}
+    float defObjCoord[][3] =   {{1.0f, 1.0f, 0.0f}, //array with containing arrays of coordinates for the vertices
+                                  {1.0f, 6.0f, 0.0f},
+                                  {6.0f, 1.0f, 0.0f},
+                                  {6.0f, 6.0f, 0.0f},
+                                  {1.0f, 1.0f, -5.0f},
+                                  {1.0f, 6.0f, -5.0f},
+                                  {6.0f, 6.0f, -5.0f},
+                                  {6.0f, 1.0f, -5.0f}
                                  };
     mvvels(defObjCoord);
     auto ptrToHalfEdge = halfEdges.begin();
@@ -281,6 +281,43 @@ HalfEdge* HalfEdgeDS::getOppositeHE(HalfEdge* he)
     }
 }
 
+void HalfEdgeDS::KEMH(HalfEdge* he)
+{
+    //create new elements
+    Loop* l = new Loop;
+    loops.push_back(l);
+    //Set tmp Pointer
+    HalfEdge* hea = he->prevHE;
+    HalfEdge* heb = getOppositeHE(he)->nextHE;
+    HalfEdge* tmp = he->nextHE;
+    Loop* oldLoop = he->toLoop;
+    Face* face = oldLoop->toFace;
+
+    // Set Pointers
+    oldLoop->nextLoop = l;
+    l->prevLoop = oldLoop;
+    l->nextLoop = oldLoop->nextLoop;
+    oldLoop->toHE = hea;
+    l->toFace = oldLoop->toFace;
+    l->toHE = he->nextHE;
+    face->innerLoop = l;
+    hea->nextHE = heb;
+    heb->prevHE = hea;
+    while (tmp->startV != he->nextHE->startV)
+    {
+        tmp->toLoop = l;
+        tmp = tmp->nextHE;
+    }
+    tmp->nextHE = he->nextHE;
+    he->nextHE->prevHE = tmp;
+    // remove from lists and heap
+    edges.remove(he->toEdge);
+    halfEdges.remove(getOppositeHE(he));
+    halfEdges.remove(he);
+    /*delete getOppositeHE(he);
+    delete he->toEdge;
+    delete he;*/
+}
 
 void HalfEdgeDS::clearDS()
 {
@@ -299,7 +336,29 @@ void HalfEdgeDS::clearDS()
 	solids.clear();
 }
 
+void HalfEdgeDS::checkEuler()
+{
+                // Amount of holes (inner loops)
+        int h = 0;
+        std::list<Face*> hfaces;
+        hfaces = faces;
+        while (hfaces.size() != 0)
+        {
+                if (hfaces.front()->innerLoop != nullptr)
+                {
+                        h++;
+                        hfaces.pop_front();
+                }
+                else
+                {
+                        hfaces.pop_front();
+                }
+        }
+                int a;
+                a = 1 - (vertices.size() - edges.size() + faces.size() - h) / 2;
+                std::cout << "According to the Euler-Pointcare formula, there should be " << a << " rings" << std::endl;
 
+}
 
 std::ostream& operator<< (std::ostream& os, HalfEdgeDS& ds)
 {
