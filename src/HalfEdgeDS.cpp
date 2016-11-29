@@ -314,9 +314,6 @@ void HalfEdgeDS::KEMH(HalfEdge* he)
     edges.remove(he->toEdge);
     halfEdges.remove(getOppositeHE(he));
     halfEdges.remove(he);
-    /*delete getOppositeHE(he);
-    delete he->toEdge;
-    delete he;*/
 }
 
 void HalfEdgeDS::clearDS()
