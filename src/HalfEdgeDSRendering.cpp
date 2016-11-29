@@ -42,7 +42,10 @@ void renderV(const Vertex* v, const Vec3f& color)
 
 void renderHEActive(const HalfEdge* he)
 {
-    renderHE(he, colorWhite);
+    if(he != nullptr)
+    {
+        renderHE(he, colorWhite);
+    }
 }
 
 void renderArrow(const Vec3f& p1, const Vec3f& p2, float diameter)

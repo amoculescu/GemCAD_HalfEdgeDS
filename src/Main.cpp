@@ -161,6 +161,13 @@ void keyPressed(unsigned char key, int x, int y)
             coutHelp();
             break;
             // reset view
+        case 'c' :
+        case 'C' :
+            activeHE = nullptr;
+            heDS.clearDS();
+            glutPostRedisplay();// use this whenever 3D data changed to redraw the scene
+            break;
+        // reset view
         case 'r':
         case 'R':
             setDefaults();
@@ -202,6 +209,12 @@ void keyPressed(unsigned char key, int x, int y)
         case 'q':
         case 'Q':
             savedHE = activeHE;
+            break;
+
+        case '1':
+            heDS.mvvels(nullptr);
+            glutPostRedisplay();
+            std::cout << heDS << std::endl << std::endl;
             break;
 
         case '2':

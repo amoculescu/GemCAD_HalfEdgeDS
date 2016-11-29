@@ -21,12 +21,51 @@ void HalfEdgeDS::createDefaultObject()
                                   {0.0f, 2.0f, 0.0f},
                                   {2.0f, 0.0f, 0.0f},
                                   {2.0f, 2.0f, 0.0f},
-                                  {0.0f, 0.0f, 2.0f},
-                                  {0.0f, 2.0f, 2.0f},
-                                  {2.0f, 0.0f, 2.0f},
-                                  {2.0f, 2.0f, 2.0f}
+                                  {0.0f, 0.0f, -2.0f},
+                                  {0.0f, 2.0f, -2.0f},
+                                  {2.0f, 2.0f, -2.0f},
+                                  {2.0f, 0.0f, -2.0f}
                                  };
     mvvels(defObjCoord);
+    auto ptrToHalfEdge = halfEdges.begin();
+    auto ptrToVertex = vertices.begin();
+    MEV(*ptrToHalfEdge, defObjCoord[2]);
+    std::advance(ptrToHalfEdge, 1);
+    MEV(*ptrToHalfEdge, defObjCoord[3]);
+    ptrToHalfEdge = halfEdges.begin();
+    std::advance(ptrToHalfEdge, 5);
+    std::advance(ptrToVertex, 2);
+    MEL(*ptrToHalfEdge, *ptrToVertex, true);
+    ptrToHalfEdge = halfEdges.begin();
+    MEV(*ptrToHalfEdge, defObjCoord[4]);
+    std::advance(ptrToHalfEdge, 4);
+    MEV(*ptrToHalfEdge, defObjCoord[5]);
+    ptrToHalfEdge = halfEdges.begin();
+    std::advance(ptrToHalfEdge, 7);
+    MEV(*ptrToHalfEdge, defObjCoord[6]);
+    ptrToHalfEdge = halfEdges.begin();
+    std::advance(ptrToHalfEdge, 3);
+    MEV(*ptrToHalfEdge, defObjCoord[7]);
+    ptrToHalfEdge = halfEdges.begin();
+    ptrToVertex = vertices.begin();
+    std::advance(ptrToHalfEdge, 15);
+    std::advance(ptrToVertex, 4);
+    MEL(*ptrToHalfEdge, *ptrToVertex, true);
+    ptrToHalfEdge = halfEdges.begin();
+    std::advance(ptrToHalfEdge, 11);
+    MEL(*ptrToHalfEdge, *ptrToVertex, true);
+    ptrToHalfEdge = halfEdges.begin();
+    ptrToVertex = vertices.begin();
+    std::advance(ptrToHalfEdge, 17);
+    std::advance(ptrToVertex, 6);
+    MEL(*ptrToHalfEdge, *ptrToVertex, true);
+    ptrToHalfEdge = halfEdges.begin();
+    ptrToVertex = vertices.begin();
+    std::advance(ptrToHalfEdge, 11);
+    std::advance(ptrToVertex, 6);
+    MEL(*ptrToHalfEdge, *ptrToVertex, true);
+
+
 	// CARE: for every "new" we need a "delete". if an element is added to the according list, it is deleted automatically within clearDS().
 
 	// TODO: Create a new VALID test object including all topological elements and linkage. The object should be volumetric and consist of at least one hole (H > 0).
@@ -163,77 +202,6 @@ void HalfEdgeDS::MEV(HalfEdge* he, float aon[] = nullptr)
 
 }
 
-/*void HalfEdgeDS::MEV(Vertex* v, float aon[] = nullptr)
-{
-    //create needed Elements
-    Vertex* vNew = new Vertex;
-
-    Edge* e = new Edge;
-
-    HalfEdge* he1 = new HalfEdge;
-    HalfEdge* he2 = new HalfEdge;
-
-    //push elements into lists
-
-    vertices.push_back(vNew);
-
-    edges.push_back(e);
-
-    halfEdges.push_back(he1);
-    halfEdges.push_back(he2);
-
-    float x,y,z;
-    //create topology
-    if(aon == nullptr)
-    {
-        //ask user for point coordinates
-        std::cout << "coordinates for new vertex format: x,y,z" << std::endl;
-        std::cin >> x >> y >> z;
-    }
-    else
-    {
-        x = aon[0];
-        y = aon[1];
-        z = aon[2];
-    }
-    vNew->coordinates = Vec3f(x, y, z);
-
-    e->he1 = he1;
-    e->he2 = he2;
-
-    he1->toEdge = e;
-    he1->toLoop = v->outgoingHE->toLoop;
-    he2->toEdge = e;
-    he2->toLoop = v->outgoingHE->toLoop;
-
-    /*if(v->outgoingHE->nextHE->nextHE != v->outgoingHE)  if v in der "Mitte"
-    {
-        vNew->outgoingHE = he1;
-        he1->startV = vNew;
-        he1->nextHE = getOppositeHE(v->outgoingHE)->nextHE;
-        he1->prevHE = he2;
-        he2->startV = v;
-        he2->nextHE = he1;
-        he2->prevHE = getOppositeHE(v->outgoingHE);
-        getOppositeHE(v->outgoingHE)->nextHE->prevHE = he1;
-        getOppositeHE(v->outgoingHE)->nextHE = he2;
-        v->outgoingHE = he2;
-    }
-    else
-    {
-        vNew->outgoingHE = he1;
-        he1->startV = vNew;
-        he1->nextHE = v->outgoingHE;
-        he1->prevHE = he2;
-        he2->startV = v;
-        he2->nextHE = he1;
-        he2->prevHE = getOppositeHE(v->outgoingHE);
-        v->outgoingHE->prevHE = he1;
-        getOppositeHE(v->outgoingHE)->nextHE = he2;
-        v->outgoingHE = he2;
-    }
-}*/
-
 void HalfEdgeDS::MEL(HalfEdge* he, Vertex* v2, bool front = true)
 {
     //create new elements
@@ -253,7 +221,6 @@ void HalfEdgeDS::MEL(HalfEdge* he, Vertex* v2, bool front = true)
 
     f->toSolid = v1->outgoingHE->toLoop->toFace->toSolid;
     f->outerLoop = l;
-    f->innerLoop = l;
 
     l->nextLoop = l;
     l->prevLoop = l;
