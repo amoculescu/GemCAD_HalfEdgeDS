@@ -199,6 +199,11 @@ void keyPressed(unsigned char key, int x, int y)
                 std::cout << "No Half Edge selected!" << std::endl;
                 break;
             }
+        case 'q':
+        case 'Q':
+            savedHE = activeHE;
+            break;
+
         case '2':
             heDS.MEV(activeHE, nullptr);
             glutPostRedisplay();
@@ -206,12 +211,7 @@ void keyPressed(unsigned char key, int x, int y)
             break;
 
         case '3':
-            auto myVertex = heDS.getVertices().begin();
-            int iterator;
-            std::cout << "Select Vertex" << std::endl;
-            std::cin >> iterator;
-            std::advance(myVertex, iterator - 1);
-            heDS.MEL(activeHE, *myVertex, true);
+            heDS.MEL(savedHE, activeHE->startV, true);
             glutPostRedisplay();
             std::cout << heDS << std::endl << std::endl;
             break;

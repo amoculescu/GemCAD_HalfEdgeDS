@@ -14,8 +14,6 @@ void renderDS(const HalfEdgeDS& heDS)
 {
     for (auto const *v : heDS.getVertices()) renderV(v, colorRed); // render all vertices as points
     for (auto const *e : heDS.getEdges()) renderE(e, colorTeal); // render all edges as lines
-    //for (auto const *he : heDS.getHalfEdges()) renderHE(he, colorGreen);
-    //for (auto const *l : heDS.getLoops()) renderHE(l, colorGreen); // render all halfedges as lines
 }
 
 void renderE(const Edge* e, const Vec3f& color)
@@ -29,42 +27,8 @@ void renderE(const Edge* e, const Vec3f& color)
 
 void renderHE(const HalfEdge* he, const Vec3f& color)
 {
-    /*glColor3fv(&color.x);
-    Vertex* pa[4];
-    HalfEdge* temp = new HalfEdge;
-    temp = l->toHE->nextHE;
-    for(int i = 0; i < 4; i++)
-    {
-        pa[i] = temp->startV;
-        temp = temp->nextHE;
-    }
-    glPushMatrix();
-    //glTranslatef(-(pa[0]->coordinates.x), -(pa[0]->coordinates.y), -(pa[0]->coordinates.z));
-    glScalef(0.5, 0.5, 0.5);
-    for(int i = 0; i < 4; i++)
-    {
-        if(i != 3)
-        {
-            renderArrow(pa[i]->coordinates, pa[i + 1]->coordinates, 0.02);
-        }
-        else
-        {
-            renderArrow(pa[i]->coordinates, pa[0]->coordinates, 0.02);
-        }
-    }
-    //glTranslatef((pa[0]->coordinates.x * 1,5), (pa[0]->coordinates.y * 1.5), (pa[0]->coordinates.z* 1.5));
-    glPopMatrix();
-    Vec3f p2;
-    if(he == he->toEdge->he1)
-    {
-        p2 = he->toEdge->he2->startV->coordinates;
-    }
-    else
-    {
-        p2 = he->toEdge->he1->startV->coordinates;
-    }*/
-
-    renderArrow(he->startV->coordinates, he->nextHE->startV->coordinates, 0.06);
+    glColor3fv(&color.x);
+    renderArrow(he->startV->coordinates, he->nextHE->startV->coordinates, 0.04);
 }
 
 void renderV(const Vertex* v, const Vec3f& color)
@@ -78,10 +42,7 @@ void renderV(const Vertex* v, const Vec3f& color)
 
 void renderHEActive(const HalfEdge* he)
 {
-    glColor3fv(&colorWhite.x);
-    renderArrow(he->startV->coordinates, he->nextHE->startV->coordinates, 0.04);
-	// TODO: render the currently selected half-edge.
-	// use renderArrow method to visualize the direction of the half-edge
+    renderHE(he, colorWhite);
 }
 
 void renderArrow(const Vec3f& p1, const Vec3f& p2, float diameter)
