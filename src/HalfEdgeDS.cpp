@@ -301,6 +301,7 @@ void HalfEdgeDS::MEL(HalfEdge* he, Vertex* v2)
 
     while(temp->startV != v2)
     {
+		temp->toLoop = l;
         temp = temp->nextHE;
     }
 
