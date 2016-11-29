@@ -24,7 +24,11 @@ void HalfEdgeDS::createDefaultObject()
                                   {1.0f, 1.0f, -5.0f},
                                   {1.0f, 6.0f, -5.0f},
                                   {6.0f, 6.0f, -5.0f},
-                                  {6.0f, 1.0f, -5.0f}
+                                  {6.0f, 1.0f, -5.0f},
+                                  {2.0f, 1.0f, -2.0f},
+                                  {4.0f, 1.0f, -2.0f},
+                                  {4.0f, 1.0f, -4.0f},
+                                  {2.0f, 1.0f, -4.0f},
                                  };
     mvvels(defObjCoord);
     auto ptrToHalfEdge = halfEdges.begin();
@@ -287,29 +291,32 @@ void HalfEdgeDS::KEMH(HalfEdge* he)
     Loop* l = new Loop;
     loops.push_back(l);
     //Set tmp Pointer
-    HalfEdge* hea = he->prevHE;
-    HalfEdge* heb = getOppositeHE(he)->nextHE;
-    HalfEdge* tmp = he->nextHE;
+    HalfEdge* hea = he->nextHE;
+    HalfEdge* heb = he->prevHE;
+    HalfEdge* hec = getOppositeHE(he)->nextHE;
+    HalfEdge* hed = getOppositeHE(he)->prevHE;
+    HalfEdge* tmp = hec;
     Loop* oldLoop = he->toLoop;
     Face* face = oldLoop->toFace;
-
     // Set Pointers
+    l->nextLoop = oldLoop->nextLoop;
     oldLoop->nextLoop = l;
     l->prevLoop = oldLoop;
-    l->nextLoop = oldLoop->nextLoop;
     oldLoop->toHE = hea;
     l->toFace = oldLoop->toFace;
-    l->toHE = he->nextHE;
+    l->toHE = heb;
     face->innerLoop = l;
-    hea->nextHE = heb;
-    heb->prevHE = hea;
-    while (tmp->startV != he->nextHE->startV)
+    hea->prevHE = hed;
+    hed->nextHE = hea;
+    while (tmp->startV != he->prevHE->startV)
     {
         tmp->toLoop = l;
         tmp = tmp->nextHE;
     }
-    tmp->nextHE = he->nextHE;
-    he->nextHE->prevHE = tmp;
+    heb->nextHE = hec;
+    hec->prevHE = heb;
+
+
     // remove from lists and heap
     edges.remove(he->toEdge);
     halfEdges.remove(getOppositeHE(he));

@@ -214,7 +214,7 @@ void keyPressed(unsigned char key, int x, int y)
         case 'L':
             if(activeHE->toLoop->toFace->innerLoop != nullptr)
             {
-                activeHE = activeHE->toLoop->toFace->innerLoop->toHE;
+                activeHE = activeHE->toLoop->nextLoop->toHE;
             }
             break;
         case 'e':
@@ -226,13 +226,11 @@ void keyPressed(unsigned char key, int x, int y)
             glutPostRedisplay();
             std::cout << heDS << std::endl << std::endl;
             break;
-
         case '2':
             heDS.MEV(activeHE, nullptr);
             glutPostRedisplay();
             std::cout << heDS << std::endl << std::endl;
             break;
-
         case '3':
             heDS.MEL(savedHE, activeHE->startV, true);
             glutPostRedisplay();
