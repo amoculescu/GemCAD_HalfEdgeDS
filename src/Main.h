@@ -22,6 +22,8 @@
 
 HalfEdgeDS heDS;		// instance of our data structure
 HalfEdge* activeHE;		// the currently active half edge
+Vertex* activeV;        // currently active Vertex
+Edge* activeE;          // currently active Edge
 
 // do not modify data below unless you know what you do
 // camera Information

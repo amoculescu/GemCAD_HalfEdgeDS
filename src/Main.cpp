@@ -151,53 +151,62 @@ void keyPressed(unsigned char key, int x, int y)
 {
 	switch (key)
 	{
-		// ESC => exit
-	case 27:
-		exit(0);
-		break;
-		// help file
-	case 'h' :
-	case 'H' :
-		coutHelp();
-		break;
-		// reset view
-	case 'r':
-	case 'R':
-		setDefaults();
-        glutPostRedisplay();// use this whenever 3D data changed to redraw the scene
-		break;
-    case 'a':
-    case 'A':
-        if (heDS.getHalfEdges().size() > 0) activeHE = heDS.getHalfEdges().front();
-        else activeHE = nullptr;
-        renderHEActive(activeHE);
-        glutPostRedisplay();
-        break;
-    case 'n':
-    case 'N':
-        activeHE = activeHE->nextHE;
-        renderHEActive(activeHE);
-        glutPostRedisplay();
-        break;
-    case 'p':
-    case 'P':
-        activeHE = activeHE->prevHE;
-        renderHEActive(activeHE);
-        glutPostRedisplay();
-        break;
-    case 'o':
-    case 'O':
-        activeHE = heDS.getOppositeHE(activeHE);
-        renderHEActive(activeHE);
-        glutPostRedisplay();
-        break;
+            // ESC => exit
+        case 27:
+            exit(0);
+            break;
+            // help file
+        case 'h' :
+        case 'H' :
+            coutHelp();
+            break;
+            // reset view
+        case 'r':
+        case 'R':
+            setDefaults();
+            glutPostRedisplay();// use this whenever 3D data changed to redraw the scene
+            break;
+        case 'a':
+        case 'A':
+            if (heDS.getHalfEdges().size() > 0) activeHE = heDS.getHalfEdges().front();
+            else activeHE = nullptr;
+            renderHEActive(activeHE);
+            glutPostRedisplay();
+            break;
+        case 'n':
+        case 'N':
+            activeHE = activeHE->nextHE;
+            renderHEActive(activeHE);
+            glutPostRedisplay();
+            break;
+        case 'p':
+        case 'P':
+            activeHE = activeHE->prevHE;
+            renderHEActive(activeHE);
+            glutPostRedisplay();
+            break;
+        case 'o':
+        case 'O':
+            if (activeHE != nullptr)
+            {
+                activeHE = heDS.getOppositeHE(activeHE);
+                renderHEActive(activeHE);
+                glutPostRedisplay();
+                break;
+            }
+            else
+            {
+                std::cout << "No Half Edge selected!" << std::endl;
+                break;
+            }
 
-
-
-
-	// TODO: Provide a navigation functionality to traverse the data structure via the half-edges (next, previous, opposite, loop-switch) using the keyboard.
-	// Note: To highlight the active half-edge just set the variable 'activeHE' which will already be rendered using the 'renderHEActive' method!
-	}		
+        case '3':
+            auto myVertex = heDS.getVertices().begin();
+            std::advance(myVertex, 2);
+            heDS.MEL(activeHE, *myVertex, true);
+            glutPostRedisplay();
+            break;
+    }
 
 }
 

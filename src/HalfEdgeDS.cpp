@@ -1,5 +1,5 @@
 #include "HalfEdgeDS.h"
-
+#include "HalfEdgeDSRendering.h"
 #include <GL/glut.h>
 #include <stdio.h>		// cout
 #include <iostream>		// cout
@@ -17,96 +17,33 @@ HalfEdgeDS::~HalfEdgeDS()
 
 void HalfEdgeDS::createDefaultObject()
 {
-    /*float defObjCoord[][3] =   {{0.0f, 0.0f, 0.0f}, //array with containing arrays of coordinates for the vertices
-                                {0.0f, 2.0f, 0.0f},
-                                {2.0f, 2.0f, 0.0f},
-                                {2.0f, 0.0f, 0.0f},
-                                {2.0f, 0.0f, 2.0f}
-                               };*/
     float defObjCoord[][3] =   {{0.0f, 0.0f, 0.0f}, //array with containing arrays of coordinates for the vertices
                                   {0.0f, 2.0f, 0.0f},
-                                  {2.0f, 2.0f, 0.0f},
                                   {2.0f, 0.0f, 0.0f},
+                                  {2.0f, 2.0f, 0.0f},
                                   {0.0f, 0.0f, 2.0f},
                                   {0.0f, 2.0f, 2.0f},
-                                  {2.0f, 2.0f, 2.0f},
-                                  {2.0f, 0.0f, 2.0f}
+                                  {2.0f, 0.0f, 2.0f},
+                                  {2.0f, 2.0f, 2.0f}
                                  };
  mvvels(defObjCoord);
- auto ptrToLast = vertices.begin();
- auto ptrToFirst = vertices.begin();
- std::advance(ptrToLast, (vertices.size() - 1));
- MEV(*ptrToLast, defObjCoord[2]);
- ptrToLast = vertices.begin();
- std::advance(ptrToLast, (vertices.size() - 1));
- MEV(*ptrToLast, defObjCoord[3]);
- ptrToLast = vertices.begin();
- std::advance(ptrToLast, (vertices.size() - 1));
- MEL(*ptrToFirst, *ptrToLast, true);
- ptrToLast = vertices.begin();
- MEV(*ptrToLast, defObjCoord[4]);
- ptrToLast = vertices.begin();
- std::advance(ptrToLast, 1);
- MEV(*ptrToLast, defObjCoord[5]);
- ptrToLast = vertices.begin();
- std::advance(ptrToLast, 2);
- MEV(*ptrToLast, defObjCoord[6]);
- ptrToLast = vertices.begin();
- std::advance(ptrToLast, 3);
- MEV(*ptrToLast, defObjCoord[7]);
-/* ptrToFirst = vertices.begin();
- ptrToLast = vertices.begin();
- std::advance(ptrToFirst, (vertices.size() - 4));
- std::advance(ptrToLast, (vertices.size() - 3));
- MEL(*ptrToFirst, *ptrToLast);
- ptrToFirst = vertices.begin();
- ptrToLast = vertices.begin();
- std::advance(ptrToFirst, (vertices.size() - 3));
- std::advance(ptrToLast, (vertices.size() - 2));
- MEL(*ptrToFirst, *ptrToLast);
- ptrToFirst = vertices.begin();
- ptrToLast = vertices.begin();
- std::advance(ptrToFirst, (vertices.size() - 2));
- std::advance(ptrToLast, (vertices.size() - 1));
- MEL(*ptrToFirst, *ptrToLast);
- ptrToFirst = vertices.begin();
- ptrToLast = vertices.begin();
- std::advance(ptrToFirst, (vertices.size() - 4));
- std::advance(ptrToLast, (vertices.size() - 1));
- MEL(*ptrToFirst, *ptrToLast);*/
-
-
- /*auto ptrToLast = vertices.begin();
+// auto ptrToFirst = vertices.begin();
  for (int i = 2; i < 4; i++)
  {
-     ptrToLast = vertices.begin();
-     std::advance(ptrToLast, (vertices.size() -1 ));
+     auto ptrToLast = vertices.begin();
+     std::advance(ptrToLast, i - 2);
      MEV(*ptrToLast, defObjCoord[i]);
- }
- auto ptrToFirst = vertices.begin();
- ptrToLast = vertices.begin();
- std::advance(ptrToLast, (vertices.size() -1 ));
- MEL(*ptrToFirst, *ptrToLast);
- for(int i = 0; i < 4; i++)
- {
-     ptrToLast = vertices.begin();
-     std::advance(ptrToLast, i);
-     MEV(*ptrToLast, defObjCoord[i + 4]);
-     if (i > 0)
+     if(i == 3)
      {
-         ptrToFirst = vertices.begin();
-         ptrToLast = vertices.begin();
-         std::advance(ptrToFirst, (vertices.size() - 2));
-         std::advance(ptrToLast, (vertices.size() -1 ));
-         MEL(*ptrToFirst, *ptrToLast);
+         while(i <= 6)
+         {
+             i++;
+             ptrToLast = vertices.begin();
+             std::advance(ptrToLast, i - 4);
+             MEV(*ptrToLast, defObjCoord[i]);
+         }
      }
  }
- ptrToFirst = vertices.begin();
- ptrToLast = vertices.begin();
- std::advance(ptrToFirst, (vertices.size() - 4));
- std::advance(ptrToLast, (vertices.size() -1 ));
- MEL(*ptrToFirst, *ptrToLast);*/
-
 	// CARE: for every "new" we need a "delete". if an element is added to the according list, it is deleted automatically within clearDS().
 
 	// TODO: Create a new VALID test object including all topological elements and linkage. The object should be volumetric and consist of at least one hole (H > 0).
@@ -255,7 +192,76 @@ void HalfEdgeDS::MEV(Vertex* v, float aon[] = nullptr)
         v->outgoingHE = he2;
     }
 }
-void HalfEdgeDS::MEL(Vertex* v1, Vertex* v2, bool front = true)
+
+void HalfEdgeDS::MEL(HalfEdge* he, Vertex* v2, bool front = true)
+{
+    //create new elements
+    Vertex* v1 = he->startV;
+    Loop* l = new Loop;
+    Face* f = new Face;
+    Edge* e = new Edge;
+    HalfEdge* he1 = new HalfEdge;
+    HalfEdge* he2 = new HalfEdge;
+    HalfEdge* temp = he;
+
+    loops.push_back(l);
+    faces.push_back(f);
+    edges.push_back(e);
+    halfEdges.push_back(he1);
+    halfEdges.push_back(he2);
+
+    f->toSolid = v1->outgoingHE->toLoop->toFace->toSolid;
+    f->outerLoop = l;
+    f->innerLoop = l;
+
+    l->nextLoop = l;
+    l->prevLoop = l;
+    l->toFace = f;
+
+    HalfEdge* hea[2];
+    hea[0] = he1;
+    hea[1] = he2;
+
+    int i, j;
+    if (front = true)
+    {
+        i = 0;
+        j = 1;
+     }
+    else
+    {
+        i = 1;
+        j = 0;
+    }
+    e->he1 = hea[i];
+    e->he2 = hea[j];
+
+    l->toHE = hea[i];
+
+    while(temp->startV != v2)
+    {
+        temp = temp->nextHE;
+    }
+
+    hea[i]->startV = v2;
+    hea[i]->nextHE = he;
+    hea[i]->prevHE = temp->prevHE;
+    hea[i]->toEdge = e;
+    hea[i]->toLoop = he->toLoop;
+
+    hea[j]->startV = v1;
+    hea[j]->nextHE = temp;
+    hea[j]->prevHE = he->prevHE;
+    hea[j]->toEdge = e;
+    hea[j]->toLoop = l;
+
+    he->prevHE->nextHE = hea[j];
+    he->prevHE = hea[i];
+    temp->prevHE->nextHE = hea[i];
+    temp->prevHE = hea[j];
+}
+
+/*void HalfEdgeDS::MEL(Vertex* v1, Vertex* v2, bool front = true)
 {
     //create new elements
     Loop* l = new Loop;
@@ -415,7 +421,7 @@ void HalfEdgeDS::MEL(Vertex* v1, Vertex* v2, bool front = true)
         tempHE = tempHE->nextHE;
     }
     //TODO: test for mistakes in connections;*/
-}
+//}
 
 HalfEdge* HalfEdgeDS::getOppositeHE(HalfEdge* he)
 {
@@ -428,6 +434,7 @@ HalfEdge* HalfEdgeDS::getOppositeHE(HalfEdge* he)
         return he->toEdge->he1;
     }
 }
+
 
 void HalfEdgeDS::clearDS()
 {
